@@ -1,0 +1,14 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+
+  "oxc.enable.oxfmt": true,
+  "oxc.fmt.configPath": "./.oxfmtrc.json",
+
+  "[json][jsonc][vue][typescript][javascript][css]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "js/ts.tsdk.path": "node_modules/typescript/lib"
+}

@@ -1,0 +1,127 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+@plugin "@iconify/tailwind4";
+
+:root {
+  color-scheme: light;
+  --site-bg: #f7f5f0;
+  --site-fg: #1f2933;
+  --site-muted: #697586;
+  --site-line: #ddd8cf;
+  --site-panel: #fffdf8;
+  --site-accent: #0f766e;
+}
+
+.dark {
+  color-scheme: dark;
+  --site-bg: #050505;
+  --site-fg: #f5f5f5;
+  --site-muted: #a3a3a3;
+  --site-line: #262626;
+  --site-panel: #0f0f0f;
+  --site-accent: #ffffff;
+  --ui-bg: var(--site-bg);
+  --ui-bg-muted: #111111;
+  --ui-bg-elevated: #1a1a1a;
+  --ui-bg-accented: #242424;
+  --ui-text: var(--site-fg);
+  --ui-text-muted: var(--site-muted);
+  --ui-text-dimmed: #737373;
+  --ui-border: var(--site-line);
+  --ui-border-muted: #1f1f1f;
+  --ui-border-accented: #3a3a3a;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background:
+    radial-gradient(
+      circle at 18% 0%,
+      color-mix(in srgb, var(--site-accent), transparent 88%) 0,
+      transparent 320px
+    ),
+    linear-gradient(180deg, color-mix(in srgb, var(--site-bg), white 8%) 0%, var(--site-bg) 460px),
+    var(--site-bg);
+  color: var(--site-fg);
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "PingFang SC",
+    "Microsoft YaHei",
+    "Segoe UI",
+    sans-serif;
+}
+
+:where(code, pre, kbd, samp) {
+  font-family: "Fira Code", "SF Mono", "Cascadia Code", "Roboto Mono", ui-monospace, monospace;
+  font-variant-ligatures: contextual;
+}
+
+.dark body {
+  background: linear-gradient(180deg, #0d0d0d 0%, var(--site-bg) 420px), var(--site-bg);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--site-accent), transparent 75%);
+}
+
+.site-container {
+  width: min(100% - 32px, 1040px);
+  margin-inline: auto;
+}
+
+.article-prose {
+  max-width: 720px;
+}
+
+.article-prose :where(h1, h2, h3, h4) {
+  scroll-margin-top: 96px;
+  letter-spacing: 0;
+}
+
+.article-prose :where(p, li) {
+  line-height: 1.85;
+}
+
+.article-prose :where(pre) {
+  border: 1px solid var(--site-line);
+}
+
+.article-prose :where(pre.shiki) {
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.article-prose :where(pre code) {
+  display: block;
+  min-width: max-content;
+}
+
+.article-prose :where(pre code .line) {
+  min-height: 1.5rem;
+}
+
+.article-prose :where(pre code .line.highlight) {
+  border-left: 2px solid var(--site-accent);
+}
+
+.article-prose :where([class*="group"] > pre) {
+  scrollbar-width: thin;
+}
+
+.dark .article-prose :where(pre) {
+  background-color: #090909 !important;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
+}
+
+.article-prose :where(img) {
+  border-radius: 8px;
+  border: 1px solid var(--site-line);
+}

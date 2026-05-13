@@ -1,0 +1,12 @@
+# mdclint reads this file and adds MDC-specific rules via its default `mdc` preset.
+default: true
+
+# Nuxt Content files use front matter and page titles from metadata.
+MD013: false # line-length
+MD025:
+  front_matter_title: ""
+MD041: false # first-line-heading
+
+# MDC containers can put fences/lists/tables inside component blocks.
+MD031: false # blanks-around-fences
+MD058: false # blanks-around-tables
