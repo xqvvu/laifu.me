@@ -12,6 +12,10 @@
   --site-line: #ddd8cf;
   --site-panel: #fffdf8;
   --site-accent: #0f766e;
+  --font-ui:
+    "Roboto", "Noto Sans SC", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  --font-code: "Fira Code", "SF Mono", "Cascadia Code", "Roboto Mono", ui-monospace, monospace;
 }
 
 .dark {
@@ -50,19 +54,11 @@ body {
     linear-gradient(180deg, color-mix(in srgb, var(--site-bg), white 8%) 0%, var(--site-bg) 460px),
     var(--site-bg);
   color: var(--site-fg);
-  font-family:
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "PingFang SC",
-    "Microsoft YaHei",
-    "Segoe UI",
-    sans-serif;
+  font-family: var(--font-ui);
 }
 
 :where(code, pre, kbd, samp) {
-  font-family: "Fira Code", "SF Mono", "Cascadia Code", "Roboto Mono", ui-monospace, monospace;
+  font-family: var(--font-code);
   font-variant-ligatures: contextual;
 }
 

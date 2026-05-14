@@ -16,6 +16,29 @@ const { data: surround } = await useAsyncData(`surround-${path.value}`, () =>
   }),
 );
 
+const { data: relatedArticles } = await useAsyncData(`related-${path.value}`, async () => {
+  const currentTags = article.value?.tags || [];
+
+  if (!currentTags.length) {
+    return [];
+  }
+
+  const posts = await queryCollection("blog")
+    .where("draft", "<>", true)
+    .order("date", "DESC")
+    .all();
+
+  return posts
+    .filter((post) => post.path !== path.value)
+    .map((post) => ({
+      ...post,
+      relevance: (post.tags || []).filter((tag) => currentTags.includes(tag)).length,
+    }))
+    .filter((post) => post.relevance > 0)
+    .sort((a, b) => b.relevance - a.relevance || +new Date(b.date) - +new Date(a.date))
+    .slice(0, 3);
+});
+
 const stats = computed(() => (article.value ? readingStats(article.value.body) : null));
 const tocLinks = computed(() => article.value?.body?.toc?.links ?? []);
 const hasToc = computed(() => tocLinks.value.length > 0);
@@ -160,6 +183,30 @@ useSchemaOrg([
               </p>
             </NuxtLink>
           </nav>
+
+          <section v-if="relatedArticles?.length" class="mt-10">
+            <h2 class="text-sm font-semibold text-(--site-muted)">相关文章</h2>
+            <div class="mt-4 grid gap-4">
+              <NuxtLink
+                v-for="related in relatedArticles"
+                :key="related.path"
+                class="group rounded-md border border-(--site-line) p-4 transition-colors hover:border-(--site-accent)"
+                :to="related.path"
+              >
+                <div class="mb-3 flex flex-wrap items-center gap-2 text-xs text-(--site-muted)">
+                  <time :datetime="related.date">{{ formatDate(related.date) }}</time>
+                  <span v-if="related.tags?.length" aria-hidden="true">/</span>
+                  <span v-for="tag in related.tags" :key="tag">{{ tag }}</span>
+                </div>
+                <p class="font-medium text-(--site-fg) group-hover:text-(--site-accent)">
+                  {{ related.title }}
+                </p>
+                <p class="mt-2 line-clamp-2 text-sm/6 text-(--site-muted)">
+                  {{ related.description }}
+                </p>
+              </NuxtLink>
+            </div>
+          </section>
         </footer>
       </div>
 

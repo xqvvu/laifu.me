@@ -17,12 +17,20 @@ export default defineNuxtConfig({
     defaultLocale: "zh-CN",
   },
   fonts: {
-    providers: {
-      google: false,
-      bunny: false,
-      fontshare: false,
-    },
     families: [
+      {
+        name: "Roboto",
+        provider: "fontsource",
+        global: true,
+        weights: [400, 500, 600, 700],
+      },
+      {
+        name: "Noto Sans SC",
+        provider: "fontsource",
+        global: true,
+        subsets: ["chinese-simplified"],
+        weights: [400, 500, 600, 700],
+      },
       {
         name: "Fira Code",
         provider: "fontsource",
@@ -82,6 +90,9 @@ export default defineNuxtConfig({
     },
   },
   vite: {
+    optimizeDeps: {
+      include: ["@nuxtjs/mdc"],
+    },
     resolve: {
       alias: [
         {
