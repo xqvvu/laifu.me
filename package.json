@@ -1,10 +1,11 @@
 {
-  "name": "laifu-me",
+  "name": "laifu.me",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "nuxt build",
     "check": "pnpm lint && pnpm build",
+    "typecheck": "nuxt typecheck",
     "dev": "nuxt dev -p 5173",
     "format": "oxfmt . \"!**/*.md\"",
     "format:check": "oxfmt --check . \"!**/*.md\"",
@@ -12,6 +13,7 @@
     "lint": "pnpm lint:eslint && pnpm lint:md",
     "lint:eslint": "eslint .",
     "lint:md": "mdclint README.md content/**/*.md",
+    "lint:inspector": "pnpx @eslint/config-inspector",
     "prepare": "lefthook install",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
@@ -33,25 +35,11 @@
     "@nuxt/eslint-config": "^1.15.2",
     "@nuxt/fonts": "^0.14.0",
     "eslint": "^9.39.4",
+    "eslint-plugin-better-tailwindcss": "^4.5.0",
     "lefthook": "^2.1.6",
     "mdclint": "^0.1.2",
     "oxfmt": "^0.49.0",
     "typescript": "^6.0.3"
   },
-  "devEngines": {
-    "packageManager": {
-      "name": "pnpm",
-      "onFail": "download",
-      "version": "11.1.1"
-    }
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "better-sqlite3",
-      "lefthook",
-      "sharp",
-      "unrs-resolver",
-      "vue-demi"
-    ]
-  }
+  "packageManager": "pnpm@11.1.1"
 }

@@ -1,4 +1,4 @@
-import readingTimeEstimate from "reading-time/lib/reading-time";
+import readingTimeEstimate from "reading-time";
 
 type MarkdownNode = {
   type?: string;
@@ -18,7 +18,31 @@ export function extractTextFromBody(body: unknown): string {
   const chunks: string[] = [];
 
   function visit(node: unknown) {
+    if (typeof node === "string") {
+      chunks.push(node);
+      return;
+    }
+
     if (!node || typeof node !== "object") {
+      return;
+    }
+
+    if (Array.isArray(node)) {
+      const [tag, props, ...children] = node;
+
+      if (typeof tag === "string" && props && typeof props === "object" && !Array.isArray(props)) {
+        const nodeProps = props as MarkdownNode;
+
+        if (typeof nodeProps.code === "string") {
+          chunks.push(nodeProps.code);
+          return;
+        }
+
+        children.forEach(visit);
+        return;
+      }
+
+      node.forEach(visit);
       return;
     }
 
@@ -26,6 +50,10 @@ export function extractTextFromBody(body: unknown): string {
 
     if (typeof current.value === "string") {
       chunks.push(current.value);
+    }
+
+    if (Array.isArray(current.value)) {
+      current.value.forEach(visit);
     }
 
     if (typeof current.code === "string") {
@@ -41,11 +69,18 @@ export function extractTextFromBody(body: unknown): string {
   return chunks.join(" ").replace(/\s+/g, " ").trim();
 }
 
+function countWords(text: string) {
+  const matches = text.match(
+    /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]|[\p{L}\p{N}_]+/gu,
+  );
+  return matches?.length || 0;
+}
+
 export function readingStats(body: unknown): ReadingStats {
   const text = extractTextFromBody(body);
   const stats = readingTimeEstimate(text);
   const minutes = Math.max(1, Math.ceil(stats.minutes));
-  const words = stats.words;
+  const words = countWords(text);
 
   return {
     minutes,

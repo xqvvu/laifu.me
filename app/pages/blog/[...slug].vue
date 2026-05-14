@@ -42,10 +42,10 @@ useSchemaOrg([
     <div class="grid gap-10 lg:grid-cols-[minmax(0,720px)_260px] lg:items-start">
       <div>
         <NuxtLink
-          to="/blog"
           class="mb-8 inline-flex items-center gap-2 text-sm text-[var(--site-muted)] hover:text-[var(--site-accent)]"
+          to="/blog"
         >
-          <UIcon name="i-lucide-arrow-left" class="size-4" />
+          <UIcon class="size-4" name="i-lucide-arrow-left" />
           返回文章
         </NuxtLink>
 
@@ -66,8 +66,8 @@ useSchemaOrg([
             <NuxtLink
               v-for="tag in article.tags"
               :key="tag"
-              :to="`/tags/${encodeURIComponent(tag)}`"
               class="rounded-md border border-[var(--site-line)] px-3 py-1 text-sm text-[var(--site-muted)] hover:border-[var(--site-accent)] hover:text-[var(--site-accent)]"
+              :to="`/tags/${encodeURIComponent(tag)}`"
             >
               {{ tag }}
             </NuxtLink>
@@ -76,16 +76,16 @@ useSchemaOrg([
 
         <div v-if="hasToc" class="mb-8 lg:hidden">
           <UContentToc
+            color="neutral"
+            default-open
+            highlight
+            highlight-color="neutral"
             :links="tocLinks"
             title="目录"
-            highlight
-            color="neutral"
-            highlight-color="neutral"
-            default-open
           />
         </div>
 
-        <ContentRenderer :value="article" class="article-prose" />
+        <ContentRenderer class="article-prose" :value="article" />
 
         <footer class="mt-14 border-t border-[var(--site-line)] pt-8">
           <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
@@ -102,8 +102,8 @@ useSchemaOrg([
                 <NuxtLink
                   v-for="tag in article.tags"
                   :key="tag"
-                  :to="`/tags/${encodeURIComponent(tag)}`"
                   class="rounded-md border border-[var(--site-line)] px-3 py-1 text-sm text-[var(--site-muted)] hover:border-[var(--site-accent)] hover:text-[var(--site-accent)]"
+                  :to="`/tags/${encodeURIComponent(tag)}`"
                 >
                   {{ tag }}
                 </NuxtLink>
@@ -111,11 +111,11 @@ useSchemaOrg([
             </div>
 
             <NuxtLink
-              to="/blog"
               class="inline-flex items-center gap-2 text-sm font-medium text-[var(--site-muted)] hover:text-[var(--site-accent)]"
+              to="/blog"
             >
               全部文章
-              <UIcon name="i-lucide-arrow-right" class="size-4" />
+              <UIcon class="size-4" name="i-lucide-arrow-right" />
             </NuxtLink>
           </div>
 
@@ -126,14 +126,14 @@ useSchemaOrg([
           >
             <NuxtLink
               v-if="surround?.[0]"
-              :to="surround[0].path"
               class="group rounded-md border border-[var(--site-line)] p-4 transition-colors hover:border-[var(--site-accent)]"
               :class="{ 'sm:col-span-2': !surround?.[1] }"
+              :to="surround[0].path"
             >
               <span
                 class="mb-3 inline-flex items-center gap-2 text-sm text-[var(--site-muted)] group-hover:text-[var(--site-accent)]"
               >
-                <UIcon name="i-lucide-arrow-left" class="size-4" />
+                <UIcon class="size-4" name="i-lucide-arrow-left" />
                 上一篇
               </span>
               <p class="font-medium text-[var(--site-fg)]">{{ surround[0].title }}</p>
@@ -144,15 +144,15 @@ useSchemaOrg([
 
             <NuxtLink
               v-if="surround?.[1]"
-              :to="surround[1].path"
               class="group rounded-md border border-[var(--site-line)] p-4 text-right transition-colors hover:border-[var(--site-accent)]"
               :class="{ 'sm:col-span-2': !surround?.[0] }"
+              :to="surround[1].path"
             >
               <span
                 class="mb-3 inline-flex items-center justify-end gap-2 text-sm text-[var(--site-muted)] group-hover:text-[var(--site-accent)]"
               >
                 下一篇
-                <UIcon name="i-lucide-arrow-right" class="size-4" />
+                <UIcon class="size-4" name="i-lucide-arrow-right" />
               </span>
               <p class="font-medium text-[var(--site-fg)]">{{ surround[1].title }}</p>
               <p class="mt-2 line-clamp-2 text-sm leading-6 text-[var(--site-muted)]">
@@ -166,11 +166,11 @@ useSchemaOrg([
       <aside class="hidden lg:sticky lg:top-24 lg:block">
         <UContentToc
           v-if="hasToc"
+          color="neutral"
+          highlight
+          highlight-color="neutral"
           :links="tocLinks"
           title="目录"
-          highlight
-          color="neutral"
-          highlight-color="neutral"
         />
       </aside>
     </div>

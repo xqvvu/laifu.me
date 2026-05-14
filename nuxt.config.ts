@@ -1,3 +1,8 @@
+import { createRequire } from "node:module";
+
+const require = createRequire(import.meta.url);
+const readingTimeRuntime = require.resolve("reading-time/lib/reading-time");
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
@@ -71,9 +76,19 @@ export default defineNuxtConfig({
       colors: ["emerald", "sky", "slate", "zinc", "neutral"],
     },
   },
+  typescript: {
+    nodeTsConfig: {
+      include: ["../eslint.config.ts"],
+    },
+  },
   vite: {
-    optimizeDeps: {
-      include: [],
+    resolve: {
+      alias: [
+        {
+          find: /^reading-time$/,
+          replacement: readingTimeRuntime,
+        },
+      ],
     },
   },
 });
