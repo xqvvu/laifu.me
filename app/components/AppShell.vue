@@ -17,12 +17,11 @@ function toggleColorMode() {
 <template>
   <div class="min-h-screen">
     <header
-      class="sticky top-0 z-40 border-b border-[var(--site-line)] bg-[var(--site-bg)]/90 backdrop-blur"
+      class="sticky top-0 z-40 border-b border-(--site-line) bg-(--site-bg)/90 backdrop-blur-sm"
     >
       <nav class="site-container flex h-16 items-center justify-between gap-4">
-        <NuxtLink to="/" class="flex items-center gap-3 text-sm font-semibold tracking-normal">
-          <span
-            class="grid size-9 place-items-center rounded-md bg-[var(--site-fg)] text-[var(--site-bg)]"
+        <NuxtLink class="flex items-center gap-3 text-sm font-semibold tracking-normal" to="/">
+          <span class="grid size-9 place-items-center rounded-md bg-(--site-fg) text-(--site-bg)"
             >来</span
           >
           <span>laifu.me</span>
@@ -32,21 +31,21 @@ function toggleColorMode() {
           <UButton
             v-for="item in navItems"
             :key="item.to"
-            :to="item.to"
-            :label="item.label"
-            variant="ghost"
             color="neutral"
+            :label="item.label"
             size="sm"
+            :to="item.to"
+            variant="ghost"
           />
           <UButton
-            variant="ghost"
+            aria-label="切换主题"
             color="neutral"
             size="sm"
             square
-            aria-label="切换主题"
+            variant="ghost"
             @click="toggleColorMode"
           >
-            <span class="icon-[lucide--moon] dark:icon-[lucide--sun] size-4" aria-hidden="true" />
+            <span aria-hidden="true" class="i-[lucide--moon] dark:i-[lucide--sun] size-4!" />
           </UButton>
         </div>
       </nav>
@@ -56,17 +55,17 @@ function toggleColorMode() {
       <NuxtPage />
     </main>
 
-    <footer class="border-t border-[var(--site-line)] py-10 text-sm text-[var(--site-muted)]">
+    <footer class="border-t border-(--site-line) py-10 text-sm text-(--site-muted)">
       <div
         class="site-container flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
       >
         <p>© {{ new Date().getFullYear() }} laifu.me</p>
         <div class="flex gap-4">
-          <NuxtLink to="/blog" class="hover:text-[var(--site-fg)]">文章</NuxtLink>
-          <NuxtLink to="/archive" class="hover:text-[var(--site-fg)]">归档</NuxtLink>
-          <NuxtLink to="/about" class="hover:text-[var(--site-fg)]">关于</NuxtLink>
-          <a href="/rss.xml" class="hover:text-[var(--site-fg)]">RSS</a>
-          <a href="/sitemap.xml" class="hover:text-[var(--site-fg)]">Sitemap</a>
+          <NuxtLink class="hover:text-(--site-fg)" to="/blog">文章</NuxtLink>
+          <NuxtLink class="hover:text-(--site-fg)" to="/archive">归档</NuxtLink>
+          <NuxtLink class="hover:text-(--site-fg)" to="/about">关于</NuxtLink>
+          <a class="hover:text-(--site-fg)" href="/rss.xml">RSS</a>
+          <a class="hover:text-(--site-fg)" href="/sitemap.xml">Sitemap</a>
         </div>
       </div>
     </footer>

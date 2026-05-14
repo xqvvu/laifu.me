@@ -30,17 +30,17 @@ const label = computed(() => props.title || props.caption || "Video");
   <figure class="mdc-video-player">
     <div class="mdc-video-player__frame">
       <video
-        class="mdc-video-player__media"
-        :src="src"
-        :poster="poster"
-        :title="title"
         :aria-label="label"
-        :preload="preload"
-        :controls="controls"
         :autoplay="autoplay"
-        :muted="muted"
+        class="mdc-video-player__media"
+        :controls="controls"
         :loop="loop"
+        :muted="muted"
         playsinline
+        :poster="poster"
+        :preload="preload"
+        :src="src"
+        :title="title"
       >
         <a :href="src">Open video</a>
       </video>
@@ -51,33 +51,3 @@ const label = computed(() => props.title || props.caption || "Video");
     </figcaption>
   </figure>
 </template>
-
-<style scoped>
-.mdc-video-player {
-  margin: 2rem 0;
-}
-
-.mdc-video-player__frame {
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  border: 1px solid var(--site-line);
-  border-radius: 8px;
-  background: #000000;
-}
-
-.mdc-video-player__media {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: #000000;
-  object-fit: contain;
-}
-
-.mdc-video-player__caption {
-  margin-top: 0.625rem;
-  color: var(--site-muted);
-  font-size: 0.875rem;
-  line-height: 1.6;
-  text-align: center;
-}
-</style>

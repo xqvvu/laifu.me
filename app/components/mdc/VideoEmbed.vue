@@ -111,10 +111,6 @@ function loadEmbed() {
     <div class="mdc-video-embed__frame">
       <iframe
         v-if="isLoaded && embedSrc"
-        class="mdc-video-embed__media"
-        :src="embedSrc"
-        :title="label"
-        loading="lazy"
         allow="
           accelerometer;
           autoplay;
@@ -125,25 +121,29 @@ function loadEmbed() {
           web-share;
         "
         allowfullscreen
+        class="mdc-video-embed__media"
+        loading="lazy"
         referrerpolicy="strict-origin-when-cross-origin"
+        :src="embedSrc"
+        :title="label"
       />
 
       <button
         v-else
+        :aria-label="`Load ${label}`"
         class="mdc-video-embed__placeholder"
         type="button"
-        :aria-label="`Load ${label}`"
         @click="loadEmbed"
       >
         <img
           v-if="posterSrc"
-          class="mdc-video-embed__poster"
-          :src="posterSrc"
           :alt="label"
+          class="mdc-video-embed__poster"
           loading="lazy"
+          :src="posterSrc"
         />
-        <span class="mdc-video-embed__shade" aria-hidden="true" />
-        <span class="mdc-video-embed__play" aria-hidden="true">
+        <span aria-hidden="true" class="mdc-video-embed__shade" />
+        <span aria-hidden="true" class="mdc-video-embed__play">
           <UIcon name="i-lucide-play" />
         </span>
         <span class="mdc-video-embed__meta">
@@ -158,98 +158,3 @@ function loadEmbed() {
     </figcaption>
   </figure>
 </template>
-
-<style scoped>
-.mdc-video-embed {
-  margin: 2rem 0;
-}
-
-.mdc-video-embed__frame {
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  border: 1px solid var(--site-line);
-  border-radius: 8px;
-  background: #000000;
-}
-
-.mdc-video-embed__media,
-.mdc-video-embed__placeholder {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border: 0;
-}
-
-.mdc-video-embed__placeholder {
-  position: relative;
-  padding: 0;
-  color: #ffffff;
-  cursor: pointer;
-}
-
-.mdc-video-embed__poster {
-  width: 100%;
-  height: 100%;
-  border: 0;
-  border-radius: 0;
-  object-fit: cover;
-}
-
-.mdc-video-embed__shade {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgb(0 0 0 / 0.12), rgb(0 0 0 / 0.68));
-}
-
-.mdc-video-embed__play {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  display: grid;
-  width: 4rem;
-  height: 4rem;
-  place-items: center;
-  border: 1px solid rgb(255 255 255 / 0.7);
-  border-radius: 999px;
-  background: rgb(0 0 0 / 0.58);
-  font-size: 1.75rem;
-  transform: translate(-50%, -50%);
-  transition:
-    background-color 160ms ease,
-    transform 160ms ease;
-}
-
-.mdc-video-embed__placeholder:hover .mdc-video-embed__play {
-  background: rgb(255 255 255 / 0.18);
-  transform: translate(-50%, -50%) scale(1.04);
-}
-
-.mdc-video-embed__meta {
-  position: absolute;
-  right: 1rem;
-  bottom: 1rem;
-  left: 1rem;
-  display: grid;
-  gap: 0.25rem;
-  text-align: left;
-}
-
-.mdc-video-embed__provider {
-  color: rgb(255 255 255 / 0.72);
-  font-size: 0.75rem;
-  text-transform: uppercase;
-}
-
-.mdc-video-embed__title {
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-.mdc-video-embed__caption {
-  margin-top: 0.625rem;
-  color: var(--site-muted);
-  font-size: 0.875rem;
-  line-height: 1.6;
-  text-align: center;
-}
-</style>

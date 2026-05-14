@@ -48,9 +48,9 @@ useSeoMeta({
     <div class="grid gap-10 lg:grid-cols-[1fr_260px]">
       <div>
         <div class="mb-10">
-          <p class="text-sm tracking-[0.16em] text-[var(--site-accent)] uppercase">Blog</p>
+          <p class="text-sm tracking-[0.16em] text-(--site-accent) uppercase">Blog</p>
           <h1 class="mt-3 text-4xl font-semibold tracking-normal">文章</h1>
-          <p class="mt-4 max-w-2xl text-[var(--site-muted)]">
+          <p class="mt-4 max-w-2xl text-(--site-muted)">
             按时间整理的长期笔记，覆盖工程、产品、工具和个人系统。
           </p>
         </div>
@@ -58,12 +58,12 @@ useSeoMeta({
         <div class="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center">
           <UInput
             v-model="search"
+            class="w-full sm:max-w-md"
             icon="i-lucide-search"
             placeholder="搜索标题、标签或正文"
             size="lg"
-            class="w-full sm:max-w-md"
           />
-          <p class="text-sm text-[var(--site-muted)]">
+          <p class="text-sm text-(--site-muted)">
             {{ filteredArticles.length }} / {{ articles?.length || 0 }} 篇
           </p>
         </div>
@@ -71,10 +71,10 @@ useSeoMeta({
         <ArticleCard v-for="article in filteredArticles" :key="article.path" :article="article" />
         <UEmpty
           v-if="!filteredArticles.length"
+          class="border-y border-(--site-line) py-12"
+          description="换一个关键词试试。"
           icon="i-lucide-search-x"
           title="没有找到文章"
-          description="换一个关键词试试。"
-          class="border-y border-[var(--site-line)] py-12"
         />
       </div>
 
@@ -84,20 +84,20 @@ useSeoMeta({
           <NuxtLink
             v-for="[tag, count] in tags"
             :key="tag"
+            class="rounded-md border border-(--site-line) px-3 py-1.5 text-sm text-(--site-muted) hover:border-(--site-accent) hover:text-(--site-accent)"
             :to="`/tags/${encodeURIComponent(tag)}`"
-            class="rounded-md border border-[var(--site-line)] px-3 py-1.5 text-sm text-[var(--site-muted)] hover:border-[var(--site-accent)] hover:text-[var(--site-accent)]"
           >
             {{ tag }} {{ count }}
           </NuxtLink>
         </div>
         <UButton
-          to="/archive"
-          label="按时间归档"
-          icon="i-lucide-archive"
-          variant="outline"
-          color="neutral"
-          size="sm"
           class="mt-6"
+          color="neutral"
+          icon="i-lucide-archive"
+          label="按时间归档"
+          size="sm"
+          to="/archive"
+          variant="outline"
         />
       </aside>
     </div>

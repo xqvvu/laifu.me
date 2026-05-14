@@ -13,8 +13,20 @@ export default withNuxt(
     },
   },
   {
-    name: "plugin/better-tailwindcss",
+    name: "plugin/tailwindcss",
     ...betterTailwindCSS.configs.recommended,
+    settings: {
+      "better-tailwindcss": {
+        detectComponentClasses: true,
+        entryPoint: "app/assets/css/main.css",
+      },
+    },
+    rules: {
+      ...betterTailwindCSS.configs.recommended.rules,
+      "better-tailwindcss/enforce-consistent-class-order": "off",
+      "better-tailwindcss/enforce-consistent-line-wrapping": "off",
+      "better-tailwindcss/no-unknown-classes": "error",
+    },
   },
   {
     name: "plugin/mdclint",
