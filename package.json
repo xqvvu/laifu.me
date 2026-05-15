@@ -6,7 +6,7 @@
     "build": "nuxt build",
     "check": "pnpm lint && pnpm build",
     "typecheck": "nuxt typecheck",
-    "dev": "nuxt dev -p 5173",
+    "dev": "nuxt dev -p 5173 --host",
     "format": "oxfmt . \"!**/*.md\"",
     "format:check": "oxfmt --check . \"!**/*.md\"",
     "generate": "nuxt generate",
@@ -25,11 +25,11 @@
     "nuxt": "^4.4.5",
     "reading-time": "^1.5.0",
     "vue": "^3.5.34",
-    "vue-router": "^5.0.6"
+    "vue-router": "^5.0.7"
   },
   "devDependencies": {
-    "@iconify-json/lucide": "^1.2.106",
-    "@iconify-json/vscode-icons": "^1.2.49",
+    "@iconify-json/catppuccin": "^1.0.3",
+    "@iconify-json/lucide": "^1.2.107",
     "@iconify/tailwind4": "^1.2.3",
     "@nuxt/eslint": "^1.15.2",
     "@nuxt/eslint-config": "^1.15.2",
@@ -43,5 +43,5 @@
     "tailwindcss": "^4.3.0",
     "typescript": "^6.0.3"
   },
-  "packageManager": "pnpm@11.1.1"
+  "packageManager": "pnpm@11.1.2"
 }

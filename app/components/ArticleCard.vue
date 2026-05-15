@@ -35,7 +35,7 @@ const stats = computed(() => (props.article.body ? readingStats(props.article.bo
     </div>
 
     <NuxtLink
-      class="block rounded-md px-1 py-2 transition-colors hover:bg-(--site-panel)"
+      class="block rounded-md py-2 transition-colors hover:bg-(--site-panel)"
       :to="article.path"
     >
       <h2
@@ -43,12 +43,12 @@ const stats = computed(() => (props.article.body ? readingStats(props.article.bo
       >
         {{ article.title }}
       </h2>
-      <div class="mt-3 flex gap-3">
+      <div class="mt-3 flex items-center gap-3">
         <p class="max-w-2xl flex-1 text-base/7 text-(--site-muted)">
           {{ article.description }}
         </p>
         <UIcon
-          class="mt-1 size-4 shrink-0 text-(--site-muted) opacity-0 transition-opacity group-hover:opacity-100"
+          class="mt-1 ml-auto size-4 shrink-0 text-(--site-muted) opacity-0 transition-opacity group-hover:opacity-100"
           name="i-lucide-arrow-up-right"
         />
       </div>

@@ -91,7 +91,7 @@ export default defineNuxtConfig({
   },
   vite: {
     optimizeDeps: {
-      include: ["@nuxtjs/mdc"],
+      include: ["@nuxtjs/mdc", "reading-time"],
     },
     resolve: {
       alias: [

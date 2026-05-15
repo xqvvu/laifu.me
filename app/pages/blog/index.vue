@@ -1,11 +1,41 @@
 <script setup lang="ts">
-const { data: articles } = await useAsyncData("blog-posts", () =>
-  queryCollection("blog").where("draft", "<>", true).order("date", "DESC").all(),
+const route = useRoute();
+
+const pageSize = 5;
+const currentPage = computed(() => {
+  const page = Number(route.query.page || 1);
+  return Number.isFinite(page) && page > 0 ? Math.floor(page) : 1;
+});
+
+const { data: totalArticles } = await useAsyncData("blog-posts-count", () =>
+  queryCollection("blog").where("draft", "<>", true).count("*"),
+);
+
+const { data: articles } = await useAsyncData(
+  "blog-posts-page",
+  () =>
+    queryCollection("blog")
+      .where("draft", "<>", true)
+      .order("date", "DESC")
+      .skip((currentPage.value - 1) * pageSize)
+      .limit(pageSize)
+      .all(),
+  {
+    watch: [currentPage],
+  },
+);
+
+const { data: articleIndex } = await useAsyncData("blog-posts-index", () =>
+  queryCollection("blog")
+    .where("draft", "<>", true)
+    .select("path", "title", "description", "date", "tags")
+    .order("date", "DESC")
+    .all(),
 );
 
 const tags = computed(() => {
   const counts = new Map<string, number>();
-  for (const article of articles.value || []) {
+  for (const article of articleIndex.value || []) {
     for (const tag of article.tags || []) {
       counts.set(tag, (counts.get(tag) || 0) + 1);
     }
@@ -16,26 +46,31 @@ const tags = computed(() => {
 
 const search = ref("");
 
-const filteredArticles = computed(() => {
+const searchResults = computed(() => {
   const keyword = search.value.trim().toLowerCase();
 
   if (!keyword) {
-    return articles.value || [];
+    return [];
   }
 
-  return (articles.value || []).filter((article) => {
-    const haystack = [
-      article.title,
-      article.description,
-      article.tags?.join(" "),
-      extractTextFromBody(article.body),
-    ]
+  return (articleIndex.value || []).filter((article) => {
+    const haystack = [article.title, article.description, article.tags?.join(" ")]
       .join(" ")
       .toLowerCase();
 
     return haystack.includes(keyword);
   });
 });
+
+const isSearching = computed(() => search.value.trim().length > 0);
+const visibleArticles = computed(() =>
+  isSearching.value ? searchResults.value : articles.value || [],
+);
+const total = computed(() => totalArticles.value || 0);
+
+function pageTo(page: number) {
+  return page === 1 ? "/blog" : { path: "/blog", query: { page } };
+}
 
 useSeoMeta({
   title: "文章",
@@ -62,21 +97,34 @@ useSeoMeta({
             v-model="search"
             class="w-full sm:max-w-md"
             icon="i-lucide-search"
-            placeholder="搜索标题、标签或正文"
+            placeholder="搜索标题、标签或摘要"
             size="lg"
           />
           <p class="text-sm whitespace-nowrap text-(--site-muted)">
-            {{ filteredArticles.length }} / {{ articles?.length || 0 }} 篇
+            <template v-if="isSearching">{{ searchResults.length }} / {{ total }} 篇</template>
+            <template v-else>第 {{ currentPage }} 页 · 共 {{ total }} 篇</template>
           </p>
         </div>
 
-        <ArticleCard v-for="article in filteredArticles" :key="article.path" :article="article" />
+        <ArticleCard v-for="article in visibleArticles" :key="article.path" :article="article" />
         <UEmpty
-          v-if="!filteredArticles.length"
+          v-if="!visibleArticles.length"
           class="border-y border-(--site-line) py-12"
           description="换一个关键词试试。"
           icon="i-lucide-search-x"
           title="没有找到文章"
+        />
+
+        <UPagination
+          v-if="!isSearching && total > pageSize"
+          :items-per-page="pageSize"
+          :page="currentPage"
+          :show-edges="true"
+          :to="pageTo"
+          :total="total"
+          class="mt-8"
+          color="neutral"
+          size="sm"
         />
       </div>
 
