@@ -3,10 +3,16 @@ pre-commit:
   parallel: true
   jobs:
     - name: format
-      run: pnpm format:check
+      glob: "*.{js,jsx,ts,tsx,vue,json,jsonc,css,yml,yaml}"
+      run: pnpm oxfmt {staged_files}
 
-    - name: lint
-      run: pnpm lint
+    - name: eslint
+      glob: "*.{js,jsx,ts,tsx,vue}"
+      run: eslint {staged_files}
+
+    - name: mdclint
+      glob: "*.md"
+      run: mdclint {staged_files}
 
 pre-push:
   jobs:
