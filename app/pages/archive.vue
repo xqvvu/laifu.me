@@ -42,7 +42,7 @@ useSeoMeta({
           <NuxtLink
             v-for="article in items"
             :key="article.path"
-            class="grid gap-2 sm:grid-cols-[120px_1fr] sm:items-baseline"
+            class="-mx-3 grid gap-2 rounded-md px-3 py-2 transition-colors hover:bg-(--site-panel) sm:grid-cols-[120px_1fr] sm:items-baseline"
             :to="article.path"
           >
             <time class="text-sm text-(--site-muted)" :datetime="article.date">

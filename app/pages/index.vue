@@ -75,11 +75,15 @@ useSeoMeta({
           <NuxtLink
             v-for="article in featured"
             :key="article.path"
-            class="rounded-lg border border-(--site-line) bg-(--site-bg) p-5 transition hover:border-(--site-accent)"
+            class="group rounded-md border border-(--site-line) bg-(--site-bg) p-5 transition-colors hover:border-(--site-accent)"
             :to="article.path"
           >
-            <p class="text-sm text-(--site-muted)">{{ article.date }}</p>
-            <h3 class="mt-3 text-lg font-semibold tracking-normal">{{ article.title }}</h3>
+            <p class="text-sm text-(--site-muted)">{{ formatDate(article.date) }}</p>
+            <h3
+              class="mt-3 text-lg font-semibold tracking-normal transition-colors group-hover:text-(--site-accent)"
+            >
+              {{ article.title }}
+            </h3>
             <p class="mt-3 text-sm/6 text-(--site-muted)">{{ article.description }}</p>
           </NuxtLink>
         </div>

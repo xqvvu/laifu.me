@@ -11,7 +11,7 @@
   --site-muted: #697586;
   --site-line: #ddd8cf;
   --site-panel: #fffdf8;
-  --site-accent: #0f766e;
+  --site-accent: #27272a;
   --font-ui:
     "Roboto", "Noto Sans SC", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", sans-serif;
@@ -25,7 +25,7 @@
   --site-muted: #a3a3a3;
   --site-line: #262626;
   --site-panel: #0f0f0f;
-  --site-accent: #ffffff;
+  --site-accent: #e4e4e7;
   --ui-bg: var(--site-bg);
   --ui-bg-muted: #111111;
   --ui-bg-elevated: #1a1a1a;

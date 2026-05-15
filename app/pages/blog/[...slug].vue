@@ -62,10 +62,10 @@ useSchemaOrg([
 
 <template>
   <article v-if="article" class="site-container py-12 sm:py-16">
-    <div class="grid gap-10 lg:grid-cols-[minmax(0,720px)_260px] lg:items-start">
-      <div>
+    <div class="grid gap-12 lg:grid-cols-[minmax(0,720px)_minmax(0,260px)] lg:items-start">
+      <div class="min-w-0">
         <NuxtLink
-          class="mb-8 inline-flex items-center gap-2 text-sm text-(--site-muted) hover:text-(--site-accent)"
+          class="mb-8 inline-flex items-center gap-2 text-sm text-(--site-muted) transition-colors hover:text-(--site-accent)"
           to="/blog"
         >
           <UIcon class="size-4" name="i-lucide-arrow-left" />
@@ -73,10 +73,13 @@ useSchemaOrg([
         </NuxtLink>
 
         <header class="mb-10 border-b border-(--site-line) pb-8">
-          <div class="mb-4 flex flex-wrap items-center gap-3 text-sm text-(--site-muted)">
+          <div class="mb-4 flex flex-wrap items-center gap-2 text-sm text-(--site-muted)">
             <time :datetime="article.date">{{ formatDate(article.date, "long") }}</time>
+            <span v-if="stats" class="text-(--site-line)" aria-hidden="true">/</span>
             <span v-if="stats">{{ stats.wordCountText }}</span>
+            <span v-if="stats" class="text-(--site-line)" aria-hidden="true">/</span>
             <span v-if="stats">{{ stats.text }}</span>
+            <span v-if="article.updated" class="text-(--site-line)" aria-hidden="true">/</span>
             <span v-if="article.updated">更新于 {{ formatDate(article.updated, "long") }}</span>
           </div>
           <h1 class="text-4xl font-semibold tracking-normal text-(--site-fg) sm:text-5xl">
@@ -85,11 +88,11 @@ useSchemaOrg([
           <p class="mt-5 text-lg/8 text-(--site-muted)">
             {{ article.description }}
           </p>
-          <div class="mt-6 flex flex-wrap gap-2">
+          <div class="mt-6 flex flex-wrap gap-1.5">
             <NuxtLink
               v-for="tag in article.tags"
               :key="tag"
-              class="rounded-md border border-(--site-line) px-3 py-1 text-sm text-(--site-muted) hover:border-(--site-accent) hover:text-(--site-accent)"
+              class="rounded-md border border-(--site-line) px-3 py-1 text-sm text-(--site-muted) transition-colors hover:border-(--site-accent) hover:text-(--site-accent)"
               :to="`/tags/${encodeURIComponent(tag)}`"
             >
               {{ tag }}
@@ -121,11 +124,11 @@ useSchemaOrg([
                 <span v-if="stats"> · {{ stats.wordCountText }} · {{ stats.text }}</span>
               </p>
 
-              <div v-if="article.tags?.length" class="mt-4 flex flex-wrap gap-2">
+              <div v-if="article.tags?.length" class="mt-4 flex flex-wrap gap-1.5">
                 <NuxtLink
                   v-for="tag in article.tags"
                   :key="tag"
-                  class="rounded-md border border-(--site-line) px-3 py-1 text-sm text-(--site-muted) hover:border-(--site-accent) hover:text-(--site-accent)"
+                  class="rounded-md border border-(--site-line) px-3 py-1 text-sm text-(--site-muted) transition-colors hover:border-(--site-accent) hover:text-(--site-accent)"
                   :to="`/tags/${encodeURIComponent(tag)}`"
                 >
                   {{ tag }}
@@ -134,7 +137,7 @@ useSchemaOrg([
             </div>
 
             <NuxtLink
-              class="inline-flex items-center gap-2 text-sm font-medium text-(--site-muted) hover:text-(--site-accent)"
+              class="inline-flex items-center gap-2 text-sm font-medium text-(--site-muted) transition-colors hover:text-(--site-accent)"
               to="/blog"
             >
               全部文章
@@ -149,7 +152,7 @@ useSchemaOrg([
           >
             <NuxtLink
               v-if="surround?.[0]"
-              class="group rounded-md border border-(--site-line) p-4 transition-colors hover:border-(--site-accent)"
+              class="group rounded-md border border-(--site-line) bg-(--site-panel)/45 p-4 transition-colors hover:border-(--site-accent)"
               :class="{ 'sm:col-span-2': !surround?.[1] }"
               :to="surround[0].path"
             >
@@ -167,7 +170,7 @@ useSchemaOrg([
 
             <NuxtLink
               v-if="surround?.[1]"
-              class="group rounded-md border border-(--site-line) p-4 text-right transition-colors hover:border-(--site-accent)"
+              class="group rounded-md border border-(--site-line) bg-(--site-panel)/45 p-4 text-right transition-colors hover:border-(--site-accent)"
               :class="{ 'sm:col-span-2': !surround?.[0] }"
               :to="surround[1].path"
             >
@@ -185,17 +188,22 @@ useSchemaOrg([
           </nav>
 
           <section v-if="relatedArticles?.length" class="mt-10">
-            <h2 class="text-sm font-semibold text-(--site-muted)">相关文章</h2>
-            <div class="mt-4 grid gap-4">
+            <div class="flex items-center justify-between border-b border-(--site-line) pb-3">
+              <h2 class="text-sm font-semibold text-(--site-muted)">相关文章</h2>
+              <UIcon class="size-4 text-(--site-muted)" name="i-lucide-link" />
+            </div>
+            <div class="mt-4 grid gap-3">
               <NuxtLink
                 v-for="related in relatedArticles"
                 :key="related.path"
-                class="group rounded-md border border-(--site-line) p-4 transition-colors hover:border-(--site-accent)"
+                class="group rounded-md border border-(--site-line) p-4 transition-colors hover:border-(--site-accent) hover:bg-(--site-panel)"
                 :to="related.path"
               >
                 <div class="mb-3 flex flex-wrap items-center gap-2 text-xs text-(--site-muted)">
                   <time :datetime="related.date">{{ formatDate(related.date) }}</time>
-                  <span v-if="related.tags?.length" aria-hidden="true">/</span>
+                  <span v-if="related.tags?.length" class="text-(--site-line)" aria-hidden="true">
+                    /
+                  </span>
                   <span v-for="tag in related.tags" :key="tag">{{ tag }}</span>
                 </div>
                 <p class="font-medium text-(--site-fg) group-hover:text-(--site-accent)">
@@ -210,7 +218,7 @@ useSchemaOrg([
         </footer>
       </div>
 
-      <aside class="hidden lg:sticky lg:top-24 lg:block">
+      <aside class="hidden min-w-0 overflow-hidden lg:sticky lg:top-24 lg:block">
         <UContentToc
           v-if="hasToc"
           color="neutral"

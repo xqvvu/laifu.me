@@ -86,7 +86,7 @@ export default defineNuxtConfig({
   },
   typescript: {
     nodeTsConfig: {
-      include: ["../eslint.config.ts"],
+      include: ["../*.config.ts"],
     },
   },
   vite: {
