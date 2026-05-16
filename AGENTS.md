@@ -82,6 +82,7 @@ featured: true
 
 - Formatting is handled by `oxfmt`; markdown is intentionally excluded from `pnpm format`.
 - ESLint includes Nuxt, Vue, Tailwind class validation, and mdclint.
+- Known temporary noise: `eslint-plugin-better-tailwindcss` currently conflicts with Iconify arbitrary icon classes and may print `Invalid icon name: "var(...)"` or grid values while still exiting successfully. Treat the command exit code as authoritative; do not fix unrelated classes just for those messages.
 - Before finishing code changes, run the narrowest useful checks. For broader changes, run:
 
 ```bash
