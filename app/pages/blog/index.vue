@@ -6,23 +6,20 @@ const currentPage = computed(() => {
   const page = Number(route.query.page || 1);
   return Number.isFinite(page) && page > 0 ? Math.floor(page) : 1;
 });
+const articlesKey = computed(() => `blog-posts-page-${currentPage.value}`);
 
 const { data: totalArticles } = await useAsyncData("blog-posts-count", () =>
   queryCollection("blog").where("draft", "<>", true).count("*"),
 );
 
-const { data: articles } = await useAsyncData(
-  "blog-posts-page",
-  () =>
-    queryCollection("blog")
-      .where("draft", "<>", true)
-      .order("date", "DESC")
-      .skip((currentPage.value - 1) * pageSize)
-      .limit(pageSize)
-      .all(),
-  {
-    watch: [currentPage],
-  },
+const { data: articles } = await useAsyncData(articlesKey, () =>
+  queryCollection("blog")
+    .where("draft", "<>", true)
+    .select("path", "title", "description", "date", "tags", "reading")
+    .order("date", "DESC")
+    .skip((currentPage.value - 1) * pageSize)
+    .limit(pageSize)
+    .all(),
 );
 
 const { data: articleIndex } = await useAsyncData("blog-posts-index", () =>

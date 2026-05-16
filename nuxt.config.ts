@@ -1,12 +1,21 @@
-import { createRequire } from "node:module";
+import type { FileAfterParseHook } from "@nuxt/content";
 
-const require = createRequire(import.meta.url);
-const readingTimeRuntime = require.resolve("reading-time/lib/reading-time");
+import { readingStats } from "./utils/reading-time";
+
+const contentFileAfterParseHook = ({ content, collection }: FileAfterParseHook) => {
+  if (collection.name !== "blog") return;
+  content.reading = readingStats(content.body);
+};
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
-  devtools: { enabled: true },
+  devtools: {
+    enabled: true,
+  },
+  hooks: {
+    "content:file:afterParse": contentFileAfterParseHook,
+  },
   modules: ["@nuxt/eslint", "@nuxt/fonts", "@nuxt/content", "@nuxt/ui", "@nuxtjs/seo"],
   eslint: {},
   css: ["~/assets/css/main.css"],
@@ -86,20 +95,12 @@ export default defineNuxtConfig({
   },
   typescript: {
     nodeTsConfig: {
-      include: ["../*.config.ts"],
+      include: ["../*.config.ts", "../utils"],
     },
   },
   vite: {
     optimizeDeps: {
-      include: ["@nuxtjs/mdc", "reading-time"],
-    },
-    resolve: {
-      alias: [
-        {
-          find: /^reading-time$/,
-          replacement: readingTimeRuntime,
-        },
-      ],
+      include: ["@nuxtjs/mdc"],
     },
   },
 });

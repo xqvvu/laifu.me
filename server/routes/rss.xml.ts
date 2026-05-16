@@ -1,6 +1,7 @@
 import { queryCollection } from "@nuxt/content/server";
 
-import { extractTextFromBody } from "../../app/utils/content";
+import { getSiteConfig } from "#site-config/server/composables/getSiteConfig";
+import { withSiteUrl } from "#site-config/server/composables/utils";
 
 function escapeXml(value: string) {
   return value
@@ -12,9 +13,10 @@ function escapeXml(value: string) {
 }
 
 export default defineEventHandler(async (event) => {
-  const siteUrl = "https://laifu.me";
+  const site = getSiteConfig(event);
   const posts = await queryCollection(event, "blog")
     .where("draft", "<>", true)
+    .select("path", "title", "description", "date")
     .order("date", "DESC")
     .all();
 
@@ -22,15 +24,14 @@ export default defineEventHandler(async (event) => {
 
   const items = posts
     .map((post) => {
-      const url = `${siteUrl}${post.path}`;
-      const text = extractTextFromBody(post.body).slice(0, 500);
+      const url = withSiteUrl(event, post.path);
 
       return [
         "<item>",
         `<title>${escapeXml(post.title)}</title>`,
         `<link>${escapeXml(url)}</link>`,
         `<guid>${escapeXml(url)}</guid>`,
-        `<description>${escapeXml(post.description || text)}</description>`,
+        `<description>${escapeXml(post.description)}</description>`,
         `<pubDate>${new Date(post.date).toUTCString()}</pubDate>`,
         "</item>",
       ].join("");
@@ -41,10 +42,10 @@ export default defineEventHandler(async (event) => {
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<rss version="2.0">',
     "<channel>",
-    "<title>laifu.me</title>",
-    `<link>${siteUrl}</link>`,
-    "<description>写给长期主义者的技术、产品与生活札记。</description>",
-    "<language>zh-CN</language>",
+    `<title>${escapeXml(site.name || "laifu.me")}</title>`,
+    `<link>${escapeXml(site.url || withSiteUrl(event, "/"))}</link>`,
+    `<description>${escapeXml(site.description || "")}</description>`,
+    `<language>${escapeXml(site.defaultLocale || "zh-CN")}</language>`,
     items,
     "</channel>",
     "</rss>",

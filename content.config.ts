@@ -14,6 +14,14 @@ export default defineContentConfig({
         cover: z.string().optional(),
         draft: z.boolean().default(false),
         featured: z.boolean().default(false),
+        reading: z
+          .object({
+            minutes: z.number(),
+            words: z.number(),
+            text: z.string(),
+            wordCountText: z.string(),
+          })
+          .optional(),
       }),
     }),
     pages: defineCollection({

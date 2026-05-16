@@ -25,6 +25,7 @@ const { data: relatedArticles } = await useAsyncData(`related-${path.value}`, as
 
   const posts = await queryCollection("blog")
     .where("draft", "<>", true)
+    .select("path", "title", "description", "date", "tags")
     .order("date", "DESC")
     .all();
 
@@ -39,7 +40,7 @@ const { data: relatedArticles } = await useAsyncData(`related-${path.value}`, as
     .slice(0, 3);
 });
 
-const stats = computed(() => (article.value ? readingStats(article.value.body) : null));
+const stats = computed(() => article.value?.reading);
 const tocLinks = computed(() => article.value?.body?.toc?.links ?? []);
 const hasToc = computed(() => tocLinks.value.length > 0);
 

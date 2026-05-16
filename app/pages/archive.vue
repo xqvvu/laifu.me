@@ -1,6 +1,10 @@
 <script setup lang="ts">
 const { data: articles } = await useAsyncData("archive-posts", () =>
-  queryCollection("blog").where("draft", "<>", true).order("date", "DESC").all(),
+  queryCollection("blog")
+    .where("draft", "<>", true)
+    .select("path", "title", "date")
+    .order("date", "DESC")
+    .all(),
 );
 
 const groups = computed(() => {

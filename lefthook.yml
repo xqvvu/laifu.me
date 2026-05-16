@@ -8,11 +8,11 @@ pre-commit:
 
     - name: eslint
       glob: "*.{js,jsx,ts,tsx,vue}"
-      run: eslint {staged_files}
+      run: pnpm eslint {staged_files}
 
     - name: mdclint
       glob: "*.md"
-      run: mdclint {staged_files}
+      run: pnpm mdclint {staged_files}
 
 pre-push:
   jobs:

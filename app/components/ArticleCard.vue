@@ -5,12 +5,15 @@ const props = defineProps<{
     title: string;
     description: string;
     date: string;
-    body?: unknown;
+    reading?: {
+      text: string;
+      wordCountText: string;
+    };
     tags?: string[];
   };
 }>();
 
-const stats = computed(() => (props.article.body ? readingStats(props.article.body) : null));
+const stats = computed(() => props.article.reading);
 </script>
 
 <template>

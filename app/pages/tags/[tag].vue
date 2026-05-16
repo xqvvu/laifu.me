@@ -3,7 +3,11 @@ const route = useRoute();
 const tag = computed(() => decodeURIComponent(route.params.tag as string));
 
 const { data: articles } = await useAsyncData(`tag-${tag.value}`, () =>
-  queryCollection("blog").where("draft", "<>", true).order("date", "DESC").all(),
+  queryCollection("blog")
+    .where("draft", "<>", true)
+    .select("path", "title", "description", "date", "tags", "reading")
+    .order("date", "DESC")
+    .all(),
 );
 
 const taggedArticles = computed(() =>
