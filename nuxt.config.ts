@@ -1,10 +1,17 @@
 import type { FileAfterParseHook } from "@nuxt/content";
 
+import { getPrerenderRoutes } from "./utils/content-routes";
 import { readingStats } from "./utils/reading-time";
 
 const contentFileAfterParseHook = ({ content, collection }: FileAfterParseHook) => {
   if (collection.name !== "blog") return;
   content.reading = readingStats(content.body);
+};
+
+const prerenderRoutesHook = async (ctx: { routes: Set<string> }) => {
+  for (const route of await getPrerenderRoutes()) {
+    ctx.routes.add(route);
+  }
 };
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
@@ -15,6 +22,7 @@ export default defineNuxtConfig({
   },
   hooks: {
     "content:file:afterParse": contentFileAfterParseHook,
+    "prerender:routes": prerenderRoutesHook,
   },
   modules: ["@nuxt/eslint", "@nuxt/fonts", "@nuxt/content", "@nuxt/ui", "@nuxtjs/seo"],
   eslint: {},
@@ -52,6 +60,12 @@ export default defineNuxtConfig({
   },
   sitemap: {
     sources: ["/api/__sitemap__/urls"],
+  },
+  nitro: {
+    prerender: {
+      crawlLinks: true,
+      routes: ["/rss.xml", "/sitemap.xml"],
+    },
   },
   app: {
     head: {

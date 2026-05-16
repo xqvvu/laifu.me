@@ -43,12 +43,31 @@ const { data: relatedArticles } = await useAsyncData(`related-${path.value}`, as
 const stats = computed(() => article.value?.reading);
 const tocLinks = computed(() => article.value?.body?.toc?.links ?? []);
 const hasToc = computed(() => tocLinks.value.length > 0);
+const site = useSiteConfig();
+const articleUrl = computed(() => new URL(path.value, site.url).toString());
 
 useSeoMeta({
   title: () => article.value?.title || "文章",
   description: () => article.value?.description || "",
   ogTitle: () => article.value?.title || "文章",
   ogDescription: () => article.value?.description || "",
+  ogType: "article",
+  ogUrl: () => articleUrl.value,
+  ogSiteName: site.name,
+  ogLocale: site.defaultLocale,
+  articlePublishedTime: () => article.value?.date || "",
+  articleModifiedTime: () => article.value?.updated || article.value?.date || "",
+  articleTag: () => article.value?.tags || [],
+  twitterCard: "summary",
+});
+
+useHead({
+  link: [
+    {
+      rel: "canonical",
+      href: () => articleUrl.value,
+    },
+  ],
 });
 
 useSchemaOrg([
