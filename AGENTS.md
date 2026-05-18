@@ -48,7 +48,7 @@ For Nuxt-related work, use the `nuxt-remote` MCP before relying on memory.
 - Shared components live in `app/components/`.
 - Global styling lives in `app/assets/css/main.css`.
 - Content lives in `content/`.
-- Blog posts live in `content/blog/*.md`.
+- Blog posts live in `content/blog/YYYY/slug.md`.
 - Static pages live in `content/pages/*.md`.
 - Content schema is defined in `content.config.ts`.
 - RSS and sitemap support live in `server/routes/rss.xml.ts` and `server/api/__sitemap__/urls.ts`.
@@ -79,6 +79,8 @@ The dev server script uses port `5173`.
 - Do not add client-only behavior unless the feature genuinely needs it.
 
 ## Content Rules
+
+Place new blog posts under a year folder, for example `content/blog/2026/nuxt-content-structure.md`. This maps to `/blog/2026/nuxt-content-structure`.
 
 Blog front matter should match the schema in `content.config.ts`.
 
