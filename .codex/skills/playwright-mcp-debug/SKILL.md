@@ -30,10 +30,15 @@ Use Playwright MCP as the live page inspection layer. Use Playwright Test for re
    - Use screenshots after targeted checks to confirm visual layout.
    - Use traces when the sequence is multi-step or hard to explain from a static snapshot.
 
-5. Close the loop with project commands.
+5. Close browser state when finished.
+   - If no further page interaction is needed, call `browser_close` before the final response.
+   - If the tool reports there are no open tabs, treat that as a successful cleanup signal.
+   - If the browser shell or MCP-managed process remains visible after tabs are closed, report that limitation instead of leaving it unexplained.
+
+6. Close the loop with project commands.
    - Run or update Playwright Test only when the behavior should be regression-covered.
    - Use `pnpm test:e2e`, `pnpm test:e2e:headed`, `pnpm test:e2e:ui`, or `pnpm test:e2e:debug` as appropriate.
-   - Report what page was inspected, what actions were performed, what evidence was checked, and what remains unverified.
+   - Report what page was inspected, what actions were performed, what evidence was checked, whether the browser was closed, and what remains unverified.
 
 ## Debug Patterns
 
