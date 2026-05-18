@@ -24,7 +24,14 @@ export default defineNuxtConfig({
     "content:file:afterParse": contentFileAfterParseHook,
     "prerender:routes": prerenderRoutesHook,
   },
-  modules: ["@nuxt/eslint", "@nuxt/fonts", "@nuxt/content", "@nuxt/ui", "@nuxtjs/seo"],
+  modules: [
+    "@nuxt/eslint",
+    "@nuxt/fonts",
+    "@nuxt/image",
+    "@nuxt/content",
+    "@nuxt/ui",
+    "@nuxtjs/seo",
+  ],
   eslint: {},
   css: ["~/assets/css/main.css"],
   site: {
@@ -60,6 +67,10 @@ export default defineNuxtConfig({
   },
   sitemap: {
     sources: ["/api/__sitemap__/urls"],
+  },
+  image: {
+    domains: ["images.pexels.com", "i.ytimg.com"],
+    quality: 80,
   },
   nitro: {
     prerender: {
