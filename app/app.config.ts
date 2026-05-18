@@ -45,6 +45,7 @@ const codeIconProse = {
     "vite.config.ts": "catppuccin-vite",
     "eslint.config.ts": "catppuccin-eslint",
     "vitetest.config.ts": "catppuccin-vitest",
+    "playwright.config.ts": "catppuccin-playwright",
   },
 };
 

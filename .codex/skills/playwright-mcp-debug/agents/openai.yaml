@@ -1,0 +1,4 @@
+interface:
+  display_name: "Playwright MCP Debug"
+  short_description: "Debug local pages with Playwright MCP"
+  default_prompt: "Use $playwright-mcp-debug to inspect and debug a local Nuxt page."

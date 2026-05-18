@@ -19,15 +19,18 @@ function toggleColorMode() {
     <header
       class="sticky top-0 z-40 border-b border-(--site-line) bg-(--site-bg)/90 backdrop-blur-sm"
     >
-      <nav class="site-container flex h-16 items-center justify-between gap-4">
-        <NuxtLink class="flex items-center gap-3 text-sm font-semibold tracking-normal" to="/">
+      <nav class="site-container flex h-16 min-w-0 items-center justify-between gap-3">
+        <NuxtLink
+          class="flex min-w-0 items-center gap-3 text-sm font-semibold tracking-normal"
+          to="/"
+        >
           <span class="grid size-9 place-items-center rounded-md bg-(--site-fg) text-(--site-bg)"
             >来</span
           >
-          <span>laifu.me</span>
+          <span class="hidden sm:inline">laifu.me</span>
         </NuxtLink>
 
-        <div class="flex items-center gap-1">
+        <div class="flex min-w-0 items-center gap-0.5 overflow-x-auto sm:gap-1">
           <UButton
             v-for="item in navItems"
             :key="item.to"
@@ -45,7 +48,8 @@ function toggleColorMode() {
             variant="ghost"
             @click="toggleColorMode"
           >
-            <span aria-hidden="true" class="i-[lucide--moon] dark:i-[lucide--sun] size-4!" />
+            <span aria-hidden="true" class="i-[lucide--moon] size-4! dark:hidden" />
+            <span aria-hidden="true" class="i-[lucide--sun] hidden size-4! dark:inline-block" />
           </UButton>
         </div>
       </nav>
@@ -60,7 +64,7 @@ function toggleColorMode() {
         class="site-container flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
       >
         <p>© {{ new Date().getFullYear() }} laifu.me</p>
-        <div class="flex gap-4">
+        <div class="flex flex-wrap gap-x-4 gap-y-2">
           <NuxtLink class="hover:text-(--site-fg)" to="/blog">文章</NuxtLink>
           <NuxtLink class="hover:text-(--site-fg)" to="/archive">归档</NuxtLink>
           <NuxtLink class="hover:text-(--site-fg)" to="/about">关于</NuxtLink>

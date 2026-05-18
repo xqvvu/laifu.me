@@ -12,6 +12,35 @@ For Nuxt-related work, use the `nuxt-remote` MCP before relying on memory.
 - Use `list_deploy_providers` / `get_deploy_provider` when touching deployment or hosting assumptions.
 - After checking docs, align the implementation with this codebase's existing patterns instead of introducing a new architecture.
 
+## OpenSpec Workflow
+
+- For new requirements, feature work, behavior changes, bug fixes, and refactors, use the local `openspec-workflow` skill before implementation unless the user explicitly asks to skip OpenSpec.
+- Route the work through the OpenSpec-generated skills in `.codex/skills/`: `openspec-explore`, `openspec-propose`, `openspec-apply-change`, and `openspec-archive-change`.
+- Do not implement a non-trivial change until an OpenSpec proposal and tasks exist. Show tasks for user review when requested, then keep `tasks.md` updated while implementing.
+- OpenSpec does not replace the Nuxt and testing rules below: still use `nuxt-remote` for Nuxt research and Playwright MCP for user-visible verification.
+
+## Testing Research
+
+- For Nuxt testing changes, check Nuxt docs with `nuxt-remote` first. Prefer the official `@nuxt/test-utils` guidance when adding unit, Nuxt-runtime, or end-to-end test structure.
+- For Playwright setup or test authoring, check the official Playwright docs first. In particular, verify current guidance for `@playwright/test`, `webServer`, `baseURL`, browser installation, traces, and screenshots.
+- Use Playwright Test for repeatable E2E coverage and Playwright MCP for live agent inspection. Do not add Playwright MCP as a project dependency.
+- For Playwright MCP page debugging, use the local `$playwright-mcp-debug` skill in `.codex/skills/playwright-mcp-debug`.
+- Do not assume a test script exists; inspect `package.json` before running or documenting Playwright commands.
+
+## Page Debugging
+
+- Playwright Test commands:
+  - `pnpm test:e2e` runs the Chromium E2E suite.
+  - `pnpm test:e2e:headed` runs tests with a visible browser.
+  - `pnpm test:e2e:ui` opens Playwright UI mode.
+  - `pnpm test:e2e:debug` runs Playwright debug mode.
+  - `pnpm test:e2e:report` opens the last HTML report.
+  - `pnpm test:e2e:trace <trace.zip>` opens a saved trace.
+  - `pnpm test:e2e:codegen` starts codegen against `http://localhost:5173`; start `pnpm dev` first.
+- For Playwright MCP page inspection, first verify the app is serving on `http://localhost:5173` with `pnpm dev`.
+- Use `$playwright-mcp-debug` for the detailed workflow: start from `browser_snapshot`, interact through snapshot refs, inspect console/network when relevant, and use screenshots after targeted checks.
+- If Playwright MCP reports the browser is already in use, avoid concurrent MCP browser sessions or use a fresh isolated browser session if the tool offers one.
+
 ## Project Shape
 
 - App code lives in `app/`.

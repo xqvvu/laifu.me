@@ -109,7 +109,7 @@ export default defineNuxtConfig({
   },
   typescript: {
     nodeTsConfig: {
-      include: ["../*.config.ts", "../utils"],
+      include: ["../*.config.ts", "../utils", "../tests"],
     },
   },
   vite: {
