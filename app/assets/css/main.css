@@ -92,7 +92,10 @@ body {
   }
 
   .article-prose :where(pre) {
+    max-width: 100%;
+    overflow: auto;
     border: 1px solid var(--site-line);
+    overscroll-behavior-x: contain;
   }
 
   .article-prose :where(pre.shiki) {
@@ -115,8 +118,23 @@ body {
     border-left: 2px solid var(--site-accent);
   }
 
+  .article-prose :where(.group, [class*="group"]):has(> pre) {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
   .article-prose :where([class*="group"] > pre) {
     scrollbar-width: thin;
+  }
+
+  .article-prose :where(.group, [class*="group"]):has(> pre + button:last-child) {
+    margin-bottom: 3rem;
+  }
+
+  .article-prose
+    :where(.group, [class*="group"]):has(> pre + button:last-child)
+    + :where(h1, h2, h3, h4, p, figure) {
+    margin-top: 3rem;
   }
 
   .article-prose :where(table) {

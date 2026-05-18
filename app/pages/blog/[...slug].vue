@@ -110,7 +110,6 @@ useSchemaOrg([
         <div v-if="hasToc" class="mb-8 lg:hidden">
           <UContentToc
             color="neutral"
-            default-open
             highlight
             highlight-color="neutral"
             :links="tocLinks"

@@ -8,6 +8,20 @@ const navItems = [
 
 const colorMode = useColorMode();
 const isDark = computed(() => colorMode.value === "dark");
+const themeColor = computed(() => (isDark.value ? "#050505" : "#f7f5f0"));
+
+useHead({
+  meta: [
+    {
+      name: "color-scheme",
+      content: "light dark",
+    },
+    {
+      name: "theme-color",
+      content: () => themeColor.value,
+    },
+  ],
+});
 
 function toggleColorMode() {
   colorMode.preference = isDark.value ? "light" : "dark";
