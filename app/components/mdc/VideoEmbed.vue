@@ -107,8 +107,8 @@ function loadEmbed() {
 </script>
 
 <template>
-  <figure class="mdc-video-embed">
-    <div class="mdc-video-embed__frame">
+  <figure :class="$style.embed">
+    <div :class="$style.frame">
       <iframe
         v-if="isLoaded && embedSrc"
         allow="
@@ -121,7 +121,7 @@ function loadEmbed() {
           web-share;
         "
         allowfullscreen
-        class="mdc-video-embed__media"
+        :class="$style.media"
         loading="lazy"
         referrerpolicy="strict-origin-when-cross-origin"
         :src="embedSrc"
@@ -131,30 +131,123 @@ function loadEmbed() {
       <button
         v-else
         :aria-label="`Load ${label}`"
-        class="mdc-video-embed__placeholder"
+        :class="$style.placeholder"
         type="button"
         @click="loadEmbed"
       >
-        <img
-          v-if="posterSrc"
-          :alt="label"
-          class="mdc-video-embed__poster"
-          loading="lazy"
-          :src="posterSrc"
-        />
-        <span aria-hidden="true" class="mdc-video-embed__shade" />
-        <span aria-hidden="true" class="mdc-video-embed__play">
+        <img v-if="posterSrc" :alt="label" :class="$style.poster" loading="lazy" :src="posterSrc" />
+        <span aria-hidden="true" :class="$style.shade" />
+        <span aria-hidden="true" :class="$style.play">
           <UIcon name="i-lucide-play" />
         </span>
-        <span class="mdc-video-embed__meta">
-          <span class="mdc-video-embed__provider">{{ providerName }}</span>
-          <span class="mdc-video-embed__title">{{ label }}</span>
+        <span :class="$style.meta">
+          <span :class="$style.provider">{{ providerName }}</span>
+          <span :class="$style.title">{{ label }}</span>
         </span>
       </button>
     </div>
 
-    <figcaption v-if="caption || $slots.default" class="mdc-video-embed__caption">
+    <figcaption v-if="caption || $slots.default" :class="$style.caption">
       <slot>{{ caption }}</slot>
     </figcaption>
   </figure>
 </template>
+
+<style module>
+@layer components {
+  .embed {
+    max-width: 100%;
+    margin: 2rem 0;
+  }
+
+  .frame {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border: 1px solid var(--site-line);
+    border-radius: 8px;
+    background: #000000;
+  }
+
+  .media,
+  .placeholder {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .placeholder {
+    position: relative;
+    padding: 0;
+    color: #ffffff;
+    cursor: pointer;
+  }
+
+  .poster {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: 0;
+    object-fit: cover;
+  }
+
+  .shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgb(0 0 0 / 0.12), rgb(0 0 0 / 0.68));
+  }
+
+  .play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: grid;
+    width: 4rem;
+    height: 4rem;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 0.7);
+    border-radius: 999px;
+    background: rgb(0 0 0 / 0.58);
+    font-size: 1.75rem;
+    transform: translate(-50%, -50%);
+    transition:
+      background-color 160ms ease,
+      transform 160ms ease;
+  }
+
+  .placeholder:hover .play {
+    background: rgb(255 255 255 / 0.18);
+    transform: translate(-50%, -50%) scale(1.04);
+  }
+
+  .meta {
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    left: 1rem;
+    display: grid;
+    gap: 0.25rem;
+    text-align: left;
+  }
+
+  .provider {
+    color: rgb(255 255 255 / 0.72);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+  }
+
+  .title {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .caption {
+    margin-top: 0.625rem;
+    color: var(--site-muted);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    text-align: center;
+  }
+}
+</style>

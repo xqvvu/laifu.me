@@ -29,7 +29,7 @@ useSeoMeta({
 <template>
   <div>
     <section
-      class="site-container grid gap-10 py-16 sm:py-20 lg:grid-cols-[1fr_320px] lg:items-end"
+      class="site-container grid gap-10 py-16 sm:py-20 lg:grid-cols-[1fr_320px] lg:items-center"
     >
       <div>
         <p class="mb-5 text-sm font-medium tracking-[0.16em] text-(--site-accent) uppercase">
@@ -53,12 +53,9 @@ useSeoMeta({
         </div>
       </div>
 
-      <aside class="border-l-2 border-(--site-accent) pl-5">
-        <p class="text-sm font-medium text-(--site-fg)">现在关注</p>
-        <p class="mt-3 text-sm/7 text-(--site-muted)">
-          Nuxt、AI 产品、工程效率、个人知识系统，以及如何把想法稳定地做成作品。
-        </p>
-      </aside>
+      <div class="flex justify-start lg:justify-end">
+        <HomeHeroVisual />
+      </div>
     </section>
 
     <section class="border-y border-(--site-line) bg-(--site-panel)/60 py-12">

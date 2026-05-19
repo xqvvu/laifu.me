@@ -117,7 +117,7 @@ useSchemaOrg([
           />
         </div>
 
-        <ContentRenderer class="article-prose" :value="article" />
+        <ArticleProse :value="article" />
 
         <footer class="mt-14 border-t border-(--site-line) pt-8">
           <div class="flex justify-end">
