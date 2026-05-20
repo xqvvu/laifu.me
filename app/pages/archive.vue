@@ -1,25 +1,7 @@
 <script setup lang="ts">
-const { data: articles } = await useAsyncData("archive-posts", () =>
-  queryCollection("blog")
-    .where("draft", "<>", true)
-    .select("path", "title", "date")
-    .order("date", "DESC")
-    .all(),
-);
+const { data: articles } = await useAsyncData("archive-posts", () => queryArchiveArticles());
 
-const groups = computed(() => {
-  const grouped = new Map<string, typeof articles.value>();
-
-  for (const article of articles.value || []) {
-    const date = new Date(article.date);
-    const key = `${date.getFullYear()} 年 ${date.getMonth() + 1} 月`;
-    const items = grouped.get(key) || [];
-
-    grouped.set(key, [...items, article]);
-  }
-
-  return [...grouped.entries()];
-});
+const groups = computed(() => groupArticlesByMonth(articles.value || []));
 
 useSeoMeta({
   title: "归档",

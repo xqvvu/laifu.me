@@ -2,6 +2,20 @@
 
 This repo is a personal blog built with Nuxt 4, Nuxt Content, Nuxt UI, Tailwind CSS v4, and Nuxt SEO. When working here, prefer small, project-shaped changes over broad rewrites.
 
+## Agent skills
+
+### Issue tracker
+
+Issues and PRDs are tracked in GitHub Issues for `xqvvu/laifu.me`. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Use the default Matt Pocock skill label vocabulary: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, and `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+This is a single-context repo: read the root `CONTEXT.md` and root `docs/adr/` before architecture, diagnosis, or TDD work. See `docs/agents/domain.md`.
+
 ## Use `nuxt-remote` First
 
 For Nuxt-related work, use the `nuxt-remote` MCP before relying on memory.

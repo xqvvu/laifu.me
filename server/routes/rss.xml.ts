@@ -1,5 +1,3 @@
-import { queryCollection } from "@nuxt/content/server";
-
 import { getSiteConfig } from "#site-config/server/composables/getSiteConfig";
 import { withSiteUrl } from "#site-config/server/composables/utils";
 
@@ -14,11 +12,7 @@ function escapeXml(value: string) {
 
 export default defineEventHandler(async (event) => {
   const site = getSiteConfig(event);
-  const posts = await queryCollection(event, "blog")
-    .where("draft", "<>", true)
-    .select("path", "title", "description", "date", "tags")
-    .order("date", "DESC")
-    .all();
+  const posts = await queryFeedArticles(event);
   const feedUrl = withSiteUrl(event, "/rss.xml");
   const siteUrl = site.url || withSiteUrl(event, "/");
   const lastBuildDate = posts[0]?.date

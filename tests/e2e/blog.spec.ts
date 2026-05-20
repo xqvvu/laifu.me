@@ -19,9 +19,19 @@ test("opens a post from the blog list", async ({ goto, page }) => {
 
   await page.getByRole("link", { name: "用 Nuxt 4 搭一个长期可维护的博客" }).click();
 
-  await expect(page).toHaveURL(/\/blog\/2026-05-nuxt-blog-architecture$/);
+  await expect(page).toHaveURL(/\/blog\/2026\/nuxt-blog-architecture$/);
   await expect(
     page.getByRole("heading", { name: "用 Nuxt 4 搭一个长期可维护的博客" }),
+  ).toBeVisible();
+});
+
+test("renders tag pages from public article tags", async ({ goto, page }) => {
+  await goto("/tags/%E8%AE%BE%E8%AE%A1", { waitUntil: "hydration" });
+
+  await expect(page.getByRole("heading", { name: "设计" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Markdown 样式预览" })).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "产品笔记：少做解释，多做可感知的状态" }),
   ).toBeVisible();
 });
 

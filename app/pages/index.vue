@@ -1,22 +1,7 @@
 <script setup lang="ts">
-const { data: featured } = await useAsyncData("home-featured-posts", () =>
-  queryCollection("blog")
-    .where("draft", "<>", true)
-    .where("featured", "=", true)
-    .select("path", "title", "description", "date")
-    .order("date", "DESC")
-    .limit(3)
-    .all(),
-);
+const { data: featured } = await useAsyncData("home-featured-posts", () => queryFeaturedArticles());
 
-const { data: recent } = await useAsyncData("home-recent-posts", () =>
-  queryCollection("blog")
-    .where("draft", "<>", true)
-    .select("path", "title", "description", "date", "tags", "reading")
-    .order("date", "DESC")
-    .limit(5)
-    .all(),
-);
+const { data: recent } = await useAsyncData("home-recent-posts", () => queryRecentArticles());
 
 useSeoMeta({
   title: "laifu.me",

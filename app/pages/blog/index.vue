@@ -9,54 +9,21 @@ const currentPage = computed(() => {
 const articlesKey = computed(() => `blog-posts-page-${currentPage.value}`);
 
 const { data: totalArticles } = await useAsyncData("blog-posts-count", () =>
-  queryCollection("blog").where("draft", "<>", true).count("*"),
+  queryPublicArticleCount(),
 );
 
 const { data: articles } = await useAsyncData(articlesKey, () =>
-  queryCollection("blog")
-    .where("draft", "<>", true)
-    .select("path", "title", "description", "date", "tags", "reading")
-    .order("date", "DESC")
-    .skip((currentPage.value - 1) * pageSize)
-    .limit(pageSize)
-    .all(),
+  queryPagedArticles(currentPage.value, pageSize),
 );
 
-const { data: articleIndex } = await useAsyncData("blog-posts-index", () =>
-  queryCollection("blog")
-    .where("draft", "<>", true)
-    .select("path", "title", "description", "date", "tags")
-    .order("date", "DESC")
-    .all(),
-);
+const { data: articleIndex } = await useAsyncData("blog-posts-index", () => queryArticleIndex());
 
-const tags = computed(() => {
-  const counts = new Map<string, number>();
-  for (const article of articleIndex.value || []) {
-    for (const tag of article.tags || []) {
-      counts.set(tag, (counts.get(tag) || 0) + 1);
-    }
-  }
-
-  return [...counts.entries()].sort((a, b) => b[1] - a[1]);
-});
+const tags = computed(() => countArticleTags(articleIndex.value || []));
 
 const search = ref("");
 
 const searchResults = computed(() => {
-  const keyword = search.value.trim().toLowerCase();
-
-  if (!keyword) {
-    return [];
-  }
-
-  return (articleIndex.value || []).filter((article) => {
-    const haystack = [article.title, article.description, article.tags?.join(" ")]
-      .join(" ")
-      .toLowerCase();
-
-    return haystack.includes(keyword);
-  });
+  return searchArticleListings(articleIndex.value || [], search.value);
 });
 
 const isSearching = computed(() => search.value.trim().length > 0);

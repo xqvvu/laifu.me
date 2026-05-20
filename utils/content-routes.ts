@@ -1,6 +1,8 @@
 import { readdir, readFile } from "node:fs/promises";
 import { join, relative, sep } from "node:path";
 
+import { listArticleTags } from "./article-listing-core";
+
 export const baseContentRoutes = ["/", "/blog", "/archive", "/about", "/rss.xml", "/sitemap.xml"];
 
 type BlogRouteIndex = {
@@ -8,30 +10,33 @@ type BlogRouteIndex = {
   tags: string[];
 };
 
+type BlogRouteArticle = {
+  path: string;
+  draft: boolean;
+  tags: string[];
+};
+
 export async function getBlogRouteIndex(): Promise<BlogRouteIndex> {
   const blogDir = join(process.cwd(), "content/blog");
   const files = await listMarkdownFiles(blogDir);
-  const posts: string[] = [];
-  const tags = new Set<string>();
+  const articles: BlogRouteArticle[] = [];
 
   for (const file of files) {
     const source = await readFile(file, "utf8");
     const frontMatter = source.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] || "";
 
-    if (/^draft:\s*true\s*$/m.test(frontMatter)) {
-      continue;
-    }
-
-    posts.push(`/blog/${toContentSlug(blogDir, file)}`);
-
-    for (const tag of parseFrontMatterTags(frontMatter)) {
-      tags.add(tag);
-    }
+    articles.push({
+      path: `/blog/${toContentSlug(blogDir, file)}`,
+      draft: isDraftFrontMatter(frontMatter),
+      tags: parseFrontMatterTags(frontMatter),
+    });
   }
 
+  const publicArticles = articles.filter((article) => !article.draft);
+
   return {
-    posts,
-    tags: [...tags].sort((a, b) => a.localeCompare(b, "zh-CN")),
+    posts: publicArticles.map((article) => article.path),
+    tags: listArticleTags(publicArticles),
   };
 }
 
@@ -81,4 +86,8 @@ function parseFrontMatterTags(frontMatter: string) {
     .split(/\r?\n/)
     .map((line) => line.match(/^\s*-\s*["']?(.+?)["']?\s*$/)?.[1])
     .filter((tag): tag is string => Boolean(tag));
+}
+
+function isDraftFrontMatter(frontMatter: string) {
+  return /^draft:\s*true\s*$/m.test(frontMatter);
 }

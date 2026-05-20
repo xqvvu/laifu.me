@@ -2,7 +2,7 @@ import { expect, test } from "@nuxt/test-utils/playwright";
 
 import { expectNoHorizontalOverflow } from "./helpers";
 
-const articlePath = "/blog/2026-05-markdown-style-guide";
+const articlePath = "/blog/2026/markdown-style-guide";
 
 test("renders article content, toc, and markdown elements", async ({ goto, page }) => {
   await goto(articlePath, { waitUntil: "hydration" });

@@ -2,17 +2,9 @@
 const route = useRoute();
 const tag = computed(() => decodeURIComponent(route.params.tag as string));
 
-const { data: articles } = await useAsyncData(`tag-${tag.value}`, () =>
-  queryCollection("blog")
-    .where("draft", "<>", true)
-    .select("path", "title", "description", "date", "tags", "reading")
-    .order("date", "DESC")
-    .all(),
-);
+const { data: articles } = await useAsyncData(`tag-${tag.value}`, () => queryTagArticles());
 
-const taggedArticles = computed(() =>
-  (articles.value || []).filter((article) => article.tags?.includes(tag.value)),
-);
+const taggedArticles = computed(() => filterArticlesByTag(articles.value || [], tag.value));
 
 useSeoMeta({
   title: () => `标签：${tag.value}`,

@@ -3,7 +3,7 @@ const route = useRoute();
 const path = computed(() => `/blog/${(route.params.slug as string[]).join("/")}`);
 
 const { data: article } = await useAsyncData(`blog-${path.value}`, () =>
-  queryCollection("blog").path(path.value).first(),
+  queryArticleByPath(path.value),
 );
 
 if (!article.value || article.value.draft) {
@@ -11,34 +11,15 @@ if (!article.value || article.value.draft) {
 }
 
 const { data: surround } = await useAsyncData(`surround-${path.value}`, () =>
-  queryCollectionItemSurroundings("blog", path.value, {
-    fields: ["title", "description"],
-  }),
+  queryArticleSurroundings(path.value),
 );
 
-const { data: relatedArticles } = await useAsyncData(`related-${path.value}`, async () => {
-  const currentTags = article.value?.tags || [];
-
-  if (!currentTags.length) {
-    return [];
-  }
-
-  const posts = await queryCollection("blog")
-    .where("draft", "<>", true)
-    .select("path", "title", "description", "date", "tags")
-    .order("date", "DESC")
-    .all();
-
-  return posts
-    .filter((post) => post.path !== path.value)
-    .map((post) => ({
-      ...post,
-      relevance: (post.tags || []).filter((tag) => currentTags.includes(tag)).length,
-    }))
-    .filter((post) => post.relevance > 0)
-    .sort((a, b) => b.relevance - a.relevance || +new Date(b.date) - +new Date(a.date))
-    .slice(0, 3);
-});
+const { data: relatedArticles } = await useAsyncData(`related-${path.value}`, () =>
+  queryRelatedArticles({
+    path: path.value,
+    tags: article.value?.tags,
+  }),
+);
 
 const tocLinks = computed(() => article.value?.body?.toc?.links ?? []);
 const hasToc = computed(() => tocLinks.value.length > 0);
