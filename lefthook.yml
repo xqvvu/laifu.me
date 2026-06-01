@@ -2,7 +2,7 @@ pre-commit:
   files: git diff --name-only --cached
   parallel: true
   jobs:
-    - name: format
+    - name: oxfmt
       glob: "*.{js,jsx,ts,tsx,vue,json,jsonc,css,yml,yaml}"
       run: pnpm oxfmt {staged_files}
 

@@ -116,6 +116,8 @@ featured: true
 
 ## UI And Styling
 
+- When designing or substantially revising pages, always use the local `frontend-design` skill (also referred to as `front-design`) to shape the visual direction before implementation.
+- For page motion, interaction polish, scroll animation, or animation performance work, use the relevant GSAP skills (`gsap-core`, `gsap-frameworks`, `gsap-performance`, `gsap-plugins`, `gsap-scrolltrigger`, `gsap-timeline`, or `gsap-utils`) before implementing animation details.
 - Prefer Nuxt UI components already used in the app (`UButton`, `UInput`, `UPagination`, `UContentToc`, `UIcon`, `UEmpty`).
 - Use lucide icons through Iconify classes such as `i-lucide-book-open`.
 - Keep the visual style quiet and text-focused: restrained borders, compact cards, neutral colors, and readable spacing.

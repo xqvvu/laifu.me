@@ -1,274 +1,565 @@
+<script setup lang="ts">
+import { gsap } from "gsap";
+
+const root = ref<HTMLElement | null>(null);
+let ctx: gsap.Context | undefined;
+let mm: gsap.MatchMedia | undefined;
+
+onMounted(() => {
+  if (!root.value) return;
+  const heroRoot = root.value;
+
+  ctx = gsap.context(() => {
+    mm = gsap.matchMedia(heroRoot);
+
+    mm.add(
+      {
+        reduce: "(prefers-reduced-motion: reduce)",
+        motion: "(prefers-reduced-motion: no-preference)",
+      },
+      ({ conditions }) => {
+        gsap.set("[data-hero-piece]", { autoAlpha: 1 });
+
+        gsap.from("[data-hero-intro]", {
+          autoAlpha: 0,
+          duration: 0.9,
+          ease: "power3.out",
+          stagger: 0.08,
+          y: 18,
+        });
+
+        gsap.from("[data-hero-line]", {
+          duration: 1.2,
+          ease: "power3.inOut",
+          scaleX: 0,
+          stagger: 0.06,
+          transformOrigin: "left center",
+        });
+
+        if (conditions?.reduce) return;
+
+        gsap.to("[data-hero-float]", {
+          duration: 5.8,
+          ease: "sine.inOut",
+          repeat: -1,
+          rotation: (index) => (index % 2 === 0 ? 1.8 : -1.4),
+          stagger: 0.18,
+          y: (index) => (index % 2 === 0 ? -8 : 7),
+          yoyo: true,
+        });
+
+        gsap.to("[data-hero-pulse]", {
+          autoAlpha: 0.42,
+          duration: 2.8,
+          ease: "sine.inOut",
+          repeat: -1,
+          stagger: 0.22,
+          yoyo: true,
+        });
+      },
+    );
+  }, heroRoot);
+});
+
+onUnmounted(() => {
+  mm?.revert();
+  ctx?.revert();
+});
+</script>
+
 <template>
-  <div :class="$style.visual" aria-label="Floating notes knowledge structure">
-    <span :class="[$style.thread, $style.threadA]" aria-hidden="true" />
-    <span :class="[$style.thread, $style.threadB]" aria-hidden="true" />
-    <span :class="[$style.thread, $style.threadC]" aria-hidden="true" />
+  <figure ref="root" :class="$style.visual" aria-label="Editorial reading console">
+    <div :class="$style.backdrop" aria-hidden="true">
+      <span :class="$style.gridLine" data-hero-line />
+      <span :class="$style.gridLine" data-hero-line />
+      <span :class="$style.gridLine" data-hero-line />
+    </div>
 
-    <span :class="[$style.node, $style.nodeA]" aria-hidden="true" />
-    <span :class="[$style.node, $style.nodeB]" aria-hidden="true" />
-    <span :class="[$style.node, $style.nodeC]" aria-hidden="true" />
-    <span :class="[$style.node, $style.nodeD]" aria-hidden="true" />
+    <div :class="$style.manuscript" data-hero-float data-hero-intro data-hero-piece>
+      <div :class="$style.manuscriptHeader">
+        <span>Draft 061</span>
+        <span>Read / Refine</span>
+      </div>
+      <div :class="$style.titleBlock">
+        <span :class="$style.titleRule" />
+        <span :class="$style.titleRule" />
+      </div>
+      <div :class="$style.copyLines">
+        <span data-hero-line />
+        <span data-hero-line />
+        <span data-hero-line />
+        <span data-hero-line />
+      </div>
+      <div :class="$style.annotation">
+        <span :class="$style.annotationMark">01</span>
+        <span :class="$style.annotationRule" data-hero-line />
+      </div>
+    </div>
 
-    <article :class="[$style.note, $style.noteBack]" aria-hidden="true">
-      <span :class="$style.spine" />
-      <span :class="$style.title" />
-      <span :class="$style.line" />
-      <span :class="[$style.line, $style.lineShort]" />
-      <span :class="$style.line" />
-    </article>
+    <div :class="$style.signalPanel" data-hero-float data-hero-intro data-hero-piece>
+      <span :class="$style.signalLabel">Signal map</span>
+      <div :class="$style.signalTrack">
+        <span :class="$style.signalDot" data-hero-pulse />
+        <span :class="$style.signalDot" data-hero-pulse />
+        <span :class="$style.signalDot" data-hero-pulse />
+      </div>
+      <div :class="$style.signalRows">
+        <span data-hero-line />
+        <span data-hero-line />
+        <span data-hero-line />
+      </div>
+    </div>
 
-    <article :class="[$style.note, $style.noteFront]" aria-hidden="true">
-      <span :class="$style.spine" />
-      <span :class="$style.bookmark" />
-      <span :class="$style.title" />
-      <span :class="$style.line" />
-      <span :class="[$style.line, $style.lineShort]" />
-      <span :class="$style.line" />
-      <span :class="[$style.line, $style.lineTiny]" />
-      <span :class="$style.tag" />
-    </article>
-  </div>
+    <div :class="$style.indexCard" data-hero-float data-hero-intro data-hero-piece>
+      <span :class="$style.indexNumber">2026</span>
+      <span :class="$style.indexText">Long memory, low noise.</span>
+    </div>
+
+    <div :class="$style.cornerDial" data-hero-intro data-hero-piece>
+      <span :class="$style.dialNeedle" data-hero-float />
+      <span :class="$style.dialLabel">quiet</span>
+    </div>
+  </figure>
 </template>
 
 <style module>
 @layer components {
   .visual {
     position: relative;
-    aspect-ratio: 1;
-    width: min(100%, 18rem);
-    min-height: 12rem;
-    overflow: hidden;
-    border: 1px solid color-mix(in srgb, var(--site-line), transparent 24%);
-    border-radius: 8px;
-    background:
-      linear-gradient(135deg, rgb(255 255 255 / 0.4), transparent 44%),
-      radial-gradient(
-        circle at 52% 42%,
-        color-mix(in srgb, var(--site-accent), transparent 88%),
-        transparent 64%
-      ),
-      color-mix(in srgb, var(--site-panel), var(--site-bg) 18%);
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.28);
-    transform: translateZ(0);
-  }
-
-  :global(.dark) .visual {
-    background:
-      linear-gradient(135deg, rgb(255 255 255 / 0.04), transparent 46%),
-      radial-gradient(
-        circle at 52% 42%,
-        color-mix(in srgb, var(--site-accent), transparent 90%),
-        transparent 64%
-      ),
-      color-mix(in srgb, var(--site-panel), var(--site-bg) 18%);
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08);
+    isolation: isolate;
+    width: min(100%, 36rem);
+    min-height: 28rem;
+    margin-inline: auto;
+    color: var(--site-fg);
   }
 
   .visual::before {
     position: absolute;
-    inset: 0.875rem;
-    border: 1px solid color-mix(in srgb, var(--site-line), transparent 45%);
-    border-radius: 6px;
+    inset: 1rem 0 0 1.25rem;
+    z-index: -2;
+    border: 1px solid color-mix(in srgb, var(--site-line), transparent 24%);
+    background:
+      linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--site-line), transparent 64%) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        0deg,
+        color-mix(in srgb, var(--site-line), transparent 68%) 1px,
+        transparent 1px
+      ),
+      linear-gradient(135deg, color-mix(in srgb, #f97316, transparent 86%), transparent 36%),
+      color-mix(in srgb, var(--site-panel), var(--site-bg) 16%);
+    background-size:
+      3.5rem 3.5rem,
+      3.5rem 3.5rem,
+      auto,
+      auto;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.32);
     content: "";
-    pointer-events: none;
-    transform: rotate(-3deg);
   }
 
   .visual::after {
     position: absolute;
-    right: 1.125rem;
-    bottom: 1.125rem;
-    width: 2.75rem;
-    height: 1px;
-    background: color-mix(in srgb, var(--site-accent), transparent 54%);
+    right: 0.9rem;
+    bottom: 2.15rem;
+    z-index: -1;
+    width: 36%;
+    height: 42%;
+    border: 1px solid color-mix(in srgb, #0f766e, transparent 36%);
+    background: repeating-linear-gradient(
+      -45deg,
+      color-mix(in srgb, #0f766e, transparent 88%) 0 2px,
+      transparent 2px 10px
+    );
     content: "";
+  }
+
+  :global(.dark) .visual::before {
+    background:
+      linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--site-line), transparent 36%) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        0deg,
+        color-mix(in srgb, var(--site-line), transparent 42%) 1px,
+        transparent 1px
+      ),
+      linear-gradient(135deg, color-mix(in srgb, #f97316, transparent 90%), transparent 36%),
+      color-mix(in srgb, var(--site-panel), var(--site-bg) 12%);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
+  }
+
+  .backdrop {
+    position: absolute;
+    inset: 0;
     pointer-events: none;
   }
 
-  .note {
+  .gridLine {
     position: absolute;
-    top: 3.15rem;
-    left: 4.75rem;
-    width: 9.2rem;
-    height: 10.8rem;
-    border: 1px solid color-mix(in srgb, var(--site-fg), transparent 72%);
-    border-radius: 6px;
-    background: color-mix(in srgb, var(--site-panel), var(--site-bg) 10%);
-    box-shadow:
-      0 18px 40px rgb(31 41 51 / 0.08),
-      inset 0 1px 0 rgb(255 255 255 / 0.35);
-    transform-origin: 50% 70%;
+    display: block;
+    height: 1px;
+    background: color-mix(in srgb, var(--site-fg), transparent 56%);
   }
 
-  :global(.dark) .note {
+  .gridLine:nth-child(1) {
+    top: 4.2rem;
+    left: 2.6rem;
+    width: 55%;
+  }
+
+  .gridLine:nth-child(2) {
+    top: 18.5rem;
+    right: 2rem;
+    width: 44%;
+  }
+
+  .gridLine:nth-child(3) {
+    top: 2.3rem;
+    right: 4.5rem;
+    width: 1px;
+    height: 20rem;
+  }
+
+  .manuscript,
+  .signalPanel,
+  .indexCard,
+  .cornerDial {
+    border: 1px solid color-mix(in srgb, var(--site-fg), transparent 72%);
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--site-panel), var(--site-bg) 8%);
     box-shadow:
-      0 18px 40px rgb(0 0 0 / 0.34),
+      0 22px 46px rgb(31 41 51 / 0.1),
+      inset 0 1px 0 rgb(255 255 255 / 0.38);
+  }
+
+  :global(.dark) .manuscript,
+  :global(.dark) .signalPanel,
+  :global(.dark) .indexCard,
+  :global(.dark) .cornerDial {
+    box-shadow:
+      0 22px 46px rgb(0 0 0 / 0.36),
       inset 0 1px 0 rgb(255 255 255 / 0.06);
   }
 
-  .noteBack {
-    opacity: 0.72;
-    transform: translate(-1.35rem, -0.45rem) rotate(-8deg) scale(0.88);
-  }
-
-  .noteFront {
-    animation: home-hero-note-float 8s ease-in-out infinite;
-    transform: rotate(4deg);
-  }
-
-  .spine,
-  .title,
-  .line,
-  .tag,
-  .bookmark {
+  .manuscript {
     position: absolute;
+    top: 2rem;
+    left: 2.1rem;
+    width: min(72%, 22rem);
+    min-height: 21rem;
+    padding: 1.1rem;
+    transform: rotate(-2deg);
+  }
+
+  .manuscriptHeader {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--site-line), transparent 20%);
+    padding-bottom: 0.85rem;
+    font-size: 0.78rem;
+    color: var(--site-muted);
+  }
+
+  .titleBlock {
+    display: grid;
+    gap: 0.7rem;
+    margin-top: 1.4rem;
+  }
+
+  .titleRule {
     display: block;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--site-muted), transparent 36%);
+    height: 0.72rem;
+    background: var(--site-fg);
   }
 
-  .spine {
-    top: 1.15rem;
-    bottom: 1.35rem;
-    left: 1rem;
-    width: 0.18rem;
-    background: color-mix(in srgb, var(--site-accent), transparent 18%);
+  .titleRule:first-child {
+    width: 74%;
   }
 
-  .title {
-    top: 1.35rem;
-    left: 1.75rem;
-    width: 4.4rem;
-    height: 0.28rem;
-    background: color-mix(in srgb, var(--site-fg), transparent 24%);
+  .titleRule:last-child {
+    width: 48%;
+    background: color-mix(in srgb, #f97316, var(--site-fg) 18%);
   }
 
-  .line {
-    left: 1.75rem;
-    width: 5.85rem;
-    height: 0.18rem;
+  .copyLines {
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 2.2rem;
   }
 
-  .line:nth-of-type(4) {
-    top: 3.05rem;
-  }
-
-  .line:nth-of-type(5) {
-    top: 4.2rem;
-  }
-
-  .line:nth-of-type(6) {
-    top: 5.35rem;
-  }
-
-  .lineShort {
-    width: 4.55rem;
-  }
-
-  .lineTiny {
-    top: 6.5rem;
-    width: 3.25rem;
-  }
-
-  .tag {
-    right: 1.1rem;
-    bottom: 1.2rem;
-    width: 2.35rem;
-    height: 0.22rem;
-    background: color-mix(in srgb, var(--site-fg), transparent 28%);
-  }
-
-  .bookmark {
-    top: 0.95rem;
-    right: 1.25rem;
-    width: 0.7rem;
-    height: 2.75rem;
-    border-radius: 0 0 3px 3px;
-    background: color-mix(in srgb, var(--site-accent), transparent 10%);
-  }
-
-  .thread {
-    position: absolute;
+  .copyLines span,
+  .signalRows span,
+  .annotationRule {
+    display: block;
     height: 1px;
-    background: color-mix(in srgb, var(--site-muted), transparent 40%);
-    transform-origin: left center;
+    background: color-mix(in srgb, var(--site-muted), transparent 28%);
   }
 
-  .threadA {
-    top: 5.15rem;
-    left: 2.2rem;
-    width: 4.9rem;
-    transform: rotate(22deg);
+  .copyLines span:nth-child(1) {
+    width: 92%;
   }
 
-  .threadB {
-    top: 7.8rem;
-    right: 2.15rem;
-    width: 5.1rem;
-    transform: rotate(154deg);
+  .copyLines span:nth-child(2) {
+    width: 72%;
   }
 
-  .threadC {
-    top: 2.8rem;
-    right: 3.25rem;
-    width: 4.2rem;
-    transform: rotate(142deg);
+  .copyLines span:nth-child(3) {
+    width: 84%;
   }
 
-  .node {
+  .copyLines span:nth-child(4) {
+    width: 52%;
+  }
+
+  .annotation {
+    position: absolute;
+    right: 1.2rem;
+    bottom: 1.2rem;
+    left: 1.2rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .annotationMark {
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    place-items: center;
+    border: 1px solid color-mix(in srgb, #0f766e, transparent 26%);
+    color: color-mix(in srgb, #0f766e, var(--site-fg) 20%);
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .signalPanel {
+    position: absolute;
+    right: 0;
+    bottom: 5.6rem;
+    width: min(48%, 15.5rem);
+    padding: 1rem;
+    transform: rotate(2.5deg);
+  }
+
+  .signalLabel {
+    display: block;
+    font-size: 0.82rem;
+    color: var(--site-muted);
+  }
+
+  .signalTrack {
+    position: relative;
+    height: 6.6rem;
+    margin-top: 1rem;
+    border: 1px solid color-mix(in srgb, var(--site-line), transparent 20%);
+    background:
+      linear-gradient(
+        90deg,
+        transparent 49%,
+        color-mix(in srgb, var(--site-line), transparent 20%) 49% 51%,
+        transparent 51%
+      ),
+      linear-gradient(
+        0deg,
+        transparent 49%,
+        color-mix(in srgb, var(--site-line), transparent 20%) 49% 51%,
+        transparent 51%
+      );
+  }
+
+  .signalDot {
     position: absolute;
     display: block;
     width: 0.62rem;
     height: 0.62rem;
-    border: 1px solid color-mix(in srgb, var(--site-bg), transparent 10%);
+    border: 1px solid var(--site-panel);
     border-radius: 999px;
-    background: var(--site-accent);
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--site-accent), transparent 90%);
+    background: #f97316;
+    box-shadow: 0 0 0 5px color-mix(in srgb, #f97316, transparent 84%);
   }
 
-  .nodeA {
-    top: 4.6rem;
-    left: 1.85rem;
+  .signalDot:nth-child(1) {
+    top: 22%;
+    left: 22%;
   }
 
-  .nodeB {
-    top: 2.35rem;
-    right: 2.8rem;
-    width: 0.48rem;
-    height: 0.48rem;
-    opacity: 0.72;
+  .signalDot:nth-child(2) {
+    top: 50%;
+    left: 58%;
+    background: #0f766e;
+    box-shadow: 0 0 0 5px color-mix(in srgb, #0f766e, transparent 84%);
   }
 
-  .nodeC {
-    right: 1.8rem;
-    bottom: 4.75rem;
-    width: 0.52rem;
-    height: 0.52rem;
-    opacity: 0.82;
+  .signalDot:nth-child(3) {
+    right: 18%;
+    bottom: 18%;
+    background: var(--site-fg);
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--site-fg), transparent 86%);
   }
 
-  .nodeD {
-    bottom: 3.1rem;
-    left: 3.45rem;
-    width: 0.46rem;
-    height: 0.46rem;
-    opacity: 0.64;
+  .signalRows {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 1rem;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .noteFront {
-      animation: none;
+  .signalRows span:nth-child(1) {
+    width: 80%;
+  }
+
+  .signalRows span:nth-child(2) {
+    width: 54%;
+  }
+
+  .signalRows span:nth-child(3) {
+    width: 68%;
+  }
+
+  .indexCard {
+    position: absolute;
+    right: 2rem;
+    bottom: 0.6rem;
+    width: min(54%, 17rem);
+    padding: 1rem;
+    transform: rotate(-1.5deg);
+  }
+
+  .indexNumber {
+    display: block;
+    color: color-mix(in srgb, #f97316, var(--site-fg) 22%);
+    font-size: 1.7rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .indexText {
+    display: block;
+    margin-top: 0.45rem;
+    color: var(--site-muted);
+    font-size: 0.88rem;
+  }
+
+  .cornerDial {
+    position: absolute;
+    top: 0;
+    right: 1.25rem;
+    display: grid;
+    width: 6rem;
+    height: 6rem;
+    place-items: center;
+    border-radius: 999px;
+  }
+
+  .cornerDial::before {
+    position: absolute;
+    inset: 0.85rem;
+    border: 1px dashed color-mix(in srgb, var(--site-muted), transparent 34%);
+    border-radius: inherit;
+    content: "";
+  }
+
+  .dialNeedle {
+    width: 1px;
+    height: 2.25rem;
+    background: color-mix(in srgb, #0f766e, var(--site-fg) 20%);
+    transform-origin: center bottom;
+  }
+
+  .dialLabel {
+    position: absolute;
+    bottom: 1rem;
+    font-size: 0.68rem;
+    color: var(--site-muted);
+  }
+
+  @media (max-width: 640px) {
+    .visual {
+      min-height: 13.75rem;
     }
-  }
 
-  @keyframes home-hero-note-float {
-    0%,
-    100% {
-      transform: rotate(4deg) translateY(0);
+    .visual::before {
+      inset: 0.35rem 0.2rem 0 0.2rem;
     }
 
-    50% {
-      transform: rotate(2.5deg) translateY(-0.35rem);
+    .manuscript {
+      top: 1.1rem;
+      left: 0.6rem;
+      width: 74%;
+      min-height: 11.8rem;
+      padding: 0.8rem;
+    }
+
+    .signalPanel {
+      right: 0.2rem;
+      bottom: 2.25rem;
+      width: 51%;
+      padding: 0.72rem;
+    }
+
+    .indexCard {
+      right: 0.8rem;
+      bottom: 0.1rem;
+      width: 58%;
+      padding: 0.72rem;
+    }
+
+    .cornerDial {
+      right: 0.5rem;
+      width: 4.2rem;
+      height: 4.2rem;
+    }
+
+    .manuscriptHeader,
+    .signalLabel,
+    .indexText {
+      font-size: 0.68rem;
+    }
+
+    .titleBlock {
+      gap: 0.45rem;
+      margin-top: 0.9rem;
+    }
+
+    .titleRule {
+      height: 0.52rem;
+    }
+
+    .copyLines {
+      gap: 0.45rem;
+      margin-top: 1.25rem;
+    }
+
+    .annotation {
+      right: 0.8rem;
+      bottom: 0.75rem;
+      left: 0.8rem;
+    }
+
+    .annotationMark {
+      width: 1.55rem;
+      height: 1.55rem;
+      font-size: 0.65rem;
+    }
+
+    .signalTrack {
+      height: 4.45rem;
+      margin-top: 0.65rem;
+    }
+
+    .signalRows {
+      gap: 0.36rem;
+      margin-top: 0.65rem;
+    }
+
+    .indexNumber {
+      font-size: 1.25rem;
     }
   }
 }

@@ -79,6 +79,10 @@ export default defineNuxtConfig({
     },
   },
   app: {
+    pageTransition: {
+      name: "page-soft",
+      mode: "out-in",
+    },
     head: {
       htmlAttrs: {
         lang: "zh-CN",

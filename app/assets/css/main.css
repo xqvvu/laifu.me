@@ -70,6 +70,36 @@ body {
   background: color-mix(in srgb, var(--site-accent), transparent 75%);
 }
 
+.page-soft-enter-active,
+.page-soft-leave-active {
+  transition:
+    opacity 160ms ease,
+    transform 180ms ease;
+}
+
+.page-soft-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-soft-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-soft-enter-active,
+  .page-soft-leave-active {
+    transition: none;
+  }
+
+  .page-soft-enter-from,
+  .page-soft-leave-to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @utility site-container {
   width: min(100% - 32px, 1040px);
   margin-inline: auto;
