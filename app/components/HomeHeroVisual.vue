@@ -293,11 +293,7 @@ onUnmounted(() => {
     width: 7.5rem;
     height: 7.5rem;
     background:
-      linear-gradient(
-        135deg,
-        color-mix(in srgb, #f97316, transparent 80%),
-        transparent 62%
-      ),
+      linear-gradient(135deg, color-mix(in srgb, #f97316, transparent 80%), transparent 62%),
       color-mix(in srgb, var(--site-panel), var(--site-bg) 14%);
     clip-path: polygon(100% 0, 100% 100%, 0 0);
   }
