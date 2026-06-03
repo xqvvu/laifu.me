@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { siteCopy } from "~/utils/site-copy";
+
 const navItems = [
   { label: "首页", to: "/" },
   { label: "文章", to: "/blog" },
@@ -9,6 +11,7 @@ const navItems = [
 const colorMode = useColorMode();
 const isDark = computed(() => colorMode.value === "dark");
 const themeColor = computed(() => (isDark.value ? "#050505" : "#f7f5f0"));
+const currentYear = new Date().getFullYear();
 
 useHead({
   meta: [
@@ -74,7 +77,7 @@ function toggleColorMode() {
       <div
         class="site-container flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
       >
-        <p>© {{ new Date().getFullYear() }} laifu.me</p>
+        <p>© {{ currentYear }} {{ siteCopy.title }} · {{ siteCopy.tagline }}</p>
         <div class="flex flex-wrap gap-x-4 gap-y-2">
           <NuxtLink class="hover:text-(--site-fg)" to="/blog">文章</NuxtLink>
           <NuxtLink class="hover:text-(--site-fg)" to="/archive">归档</NuxtLink>

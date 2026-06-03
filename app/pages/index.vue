@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import { siteCopy } from "~/utils/site-copy";
+
 const { data: featured } = await useAsyncData("home-featured-posts", () => queryFeaturedArticles());
 
 const { data: recent } = await useAsyncData("home-recent-posts", () => queryRecentArticles());
 
 useSeoMeta({
-  title: "laifu.me",
-  description: "写给长期主义者的技术、产品与生活札记。",
-  ogTitle: "laifu.me",
-  ogDescription: "写给长期主义者的技术、产品与生活札记。",
+  title: siteCopy.homeTitle,
+  description: siteCopy.description,
+  ogTitle: siteCopy.title,
+  ogDescription: siteCopy.description,
 });
 </script>
 
@@ -22,22 +24,27 @@ useSeoMeta({
             <span
               class="inline-flex h-8 items-center border border-(--site-line) px-3 text-(--site-fg)"
             >
-              Personal notes
+              {{ siteCopy.heroKicker }}
             </span>
-            <span class="inline-flex h-8 items-center border border-(--site-line) px-3">
-              Engineering
-            </span>
-            <span class="inline-flex h-8 items-center border border-(--site-line) px-3">
-              Product
+            <span
+              v-for="topic in siteCopy.topics"
+              :key="topic"
+              class="inline-flex h-8 items-center border border-(--site-line) px-3"
+            >
+              {{ topic }}
             </span>
           </div>
 
           <h1 class="max-w-3xl text-5xl/14 font-semibold text-(--site-fg) sm:text-7xl/20">
-            Laifu.me
+            {{ siteCopy.displayTitle }}
           </h1>
 
+          <p class="mt-5 max-w-2xl text-xl/8 font-medium text-(--site-fg)">
+            {{ siteCopy.tagline }}
+          </p>
+
           <p class="mt-6 max-w-2xl text-lg/8 text-(--site-muted)">
-            这里记录技术判断、产品观察、工具实践和一些生活里的长期思考。文章少一点噪音，多一点可复用的经验。
+            {{ siteCopy.description }}
           </p>
 
           <div class="mt-8 flex flex-wrap gap-3">
@@ -52,17 +59,17 @@ useSeoMeta({
           </div>
 
           <dl class="mt-10 grid max-w-xl grid-cols-3 border-y border-(--site-line) text-sm">
-            <div class="py-4 pr-4">
-              <dt class="text-(--site-muted)">Signal</dt>
-              <dd class="mt-1 font-medium text-(--site-fg)">Long-form</dd>
-            </div>
-            <div class="border-x border-(--site-line) p-4">
-              <dt class="text-(--site-muted)">Cadence</dt>
-              <dd class="mt-1 font-medium text-(--site-fg)">Slow notes</dd>
-            </div>
-            <div class="py-4 pl-4">
-              <dt class="text-(--site-muted)">Mode</dt>
-              <dd class="mt-1 font-medium text-(--site-fg)">Reusable</dd>
+            <div
+              v-for="(principle, index) in siteCopy.principles"
+              :key="principle.label"
+              :class="[
+                index === 0 ? 'py-4 pr-4' : '',
+                index === 1 ? 'border-x border-(--site-line) p-4' : '',
+                index === 2 ? 'py-4 pl-4' : '',
+              ]"
+            >
+              <dt class="text-(--site-muted)">{{ principle.label }}</dt>
+              <dd class="mt-1 font-medium text-(--site-fg)">{{ principle.value }}</dd>
             </div>
           </dl>
         </div>

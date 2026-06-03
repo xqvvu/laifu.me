@@ -1,14 +1,17 @@
-import type { FileAfterParseHook } from "@nuxt/content";
-
 import { getPrerenderRoutes } from "./utils/content-routes";
 import { readingStats } from "./utils/reading-time";
 
-const contentFileAfterParseHook = ({ content, collection }: FileAfterParseHook) => {
+type NuxtConfigHooks = NonNullable<Parameters<typeof defineNuxtConfig>[0]["hooks"]>;
+
+const contentFileAfterParseHook: NuxtConfigHooks["content:file:afterParse"] = ({
+  content,
+  collection,
+}) => {
   if (collection.name !== "blog") return;
   content.reading = readingStats(content.body);
 };
 
-const prerenderRoutesHook = async (ctx: { routes: Set<string> }) => {
+const prerenderRoutesHook: NuxtConfigHooks["prerender:routes"] = async (ctx) => {
   for (const route of await getPrerenderRoutes()) {
     ctx.routes.add(route);
   }
