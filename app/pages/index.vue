@@ -33,7 +33,7 @@ useSeoMeta({
           </div>
 
           <h1 class="max-w-3xl text-5xl/14 font-semibold text-(--site-fg) sm:text-7xl/20">
-            laifu.me
+            Laifu.me
           </h1>
 
           <p class="mt-6 max-w-2xl text-lg/8 text-(--site-muted)">

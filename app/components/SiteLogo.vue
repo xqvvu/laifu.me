@@ -1,0 +1,87 @@
+<template>
+  <span :class="$style.logo" aria-hidden="true">
+    <svg :class="$style.svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path :class="$style.signature" pathLength="128" :d="signaturePath" />
+    </svg>
+  </span>
+</template>
+
+<script setup lang="ts">
+const signaturePath =
+  "M20.8 12.9C14.5 15.1 11.5 22.4 13.9 28.9C16.3 35.6 23.9 38.3 30.2 34.9C36.4 31.5 38 23.6 34 17.8C30.1 12.2 22.3 11.5 17.9 16.5C13.4 21.6 14.7 29.9 20.9 33.3C27 36.6 34.4 33.5 36.6 27.1C35.7 31.7 36.2 35.4 39.4 38.4";
+</script>
+
+<style module>
+.logo {
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  place-items: center;
+  color: var(--site-fg);
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.signature {
+  stroke: currentColor;
+  stroke-dasharray: 128;
+  stroke-dashoffset: 0;
+  stroke-linecap: butt;
+  stroke-linejoin: round;
+  stroke-width: 2.7;
+  transform-origin: 50%;
+  animation: site-logo-grow 8s infinite forwards;
+}
+
+:global(a:hover) .signature,
+:global(a:focus-visible) .signature {
+  animation-duration: 3.8s;
+}
+
+@keyframes site-logo-grow {
+  0%,
+  9% {
+    opacity: 0;
+    stroke-dashoffset: 128;
+  }
+
+  12% {
+    opacity: 1;
+    stroke-dashoffset: 118;
+  }
+
+  28% {
+    stroke-dashoffset: 0;
+  }
+
+  86% {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+
+  96% {
+    opacity: 0;
+    stroke-dashoffset: 0;
+  }
+
+  100% {
+    opacity: 0;
+    stroke-dashoffset: 128;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .signature,
+  :global(a:hover) .signature,
+  :global(a:focus-visible) .signature {
+    animation: none;
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+}
+</style>

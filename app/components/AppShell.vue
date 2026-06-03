@@ -35,13 +35,10 @@ function toggleColorMode() {
     >
       <nav class="site-container flex h-16 min-w-0 items-center justify-between gap-3">
         <NuxtLink
-          class="flex min-w-0 items-center gap-3 text-sm font-semibold tracking-normal"
+          class="flex min-w-0 items-center gap-3 rounded-md text-sm font-semibold tracking-normal transition-colors outline-none hover:text-(--site-accent) focus-visible:ring-2 focus-visible:ring-(--site-accent)/30 focus-visible:ring-offset-2 focus-visible:ring-offset-(--site-bg)"
           to="/"
         >
-          <span class="grid size-9 place-items-center rounded-md bg-(--site-fg) text-(--site-bg)"
-            >来</span
-          >
-          <span class="hidden sm:inline">laifu.me</span>
+          <SiteLogo />
         </NuxtLink>
 
         <div class="flex min-w-0 items-center gap-0.5 overflow-x-auto sm:gap-1">
