@@ -48,7 +48,6 @@
     "@playwright/test": "^1.60.0",
     "eslint": "^9.39.4",
     "eslint-plugin-better-tailwindcss": "^4.5.0",
-    "eslint-plugin-tailwindcss": "^3.18.3",
     "lefthook": "^2.1.9",
     "mdclint": "^0.1.2",
     "oxfmt": "^0.49.0",
