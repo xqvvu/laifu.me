@@ -1,3 +1,9 @@
 {
-  "recommendations": ["vue.volar", "oxc.oxc-vscode", "antfu.iconify", "dbaeumer.vscode-eslint"]
+  "recommendations": [
+    "vue.volar",
+    "oxc.oxc-vscode",
+    "antfu.iconify",
+    "dbaeumer.vscode-eslint",
+    "typescriptteam.native-preview"
+  ]
 }
