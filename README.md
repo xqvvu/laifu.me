@@ -46,3 +46,24 @@ draft: false
 featured: true
 ---
 ```
+
+## VS Code snippets
+
+Workspace snippets for writing posts live in `.vscode/blog-mdc.code-snippets` (scope: `markdown` / `mdx`).
+
+| Prefix | What it inserts |
+| --- | --- |
+| `blog` / `blogpost` | Post frontmatter + opening section |
+| `blogdraft` | Draft frontmatter (`updated`, `cover`) |
+| `note` / `tip` / `warning` | MDC callouts |
+| `card` | MDC card |
+| `tabs` | MDC tabs |
+| `codegroup` | pnpm / npm / bun code group |
+| `codecollapse` | Collapsible long code |
+| `mdcode` | Code fence with filename |
+| `videoplayer` | MP4 / self-hosted video |
+| `youtube` / `bilibili` / `vimeo` | Embedded video |
+| `blogimg` | Image |
+| `blogsection` | H2 section skeleton |
+
+Open a post under `content/blog/`, type a prefix, then accept the snippet.
