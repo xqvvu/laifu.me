@@ -91,12 +91,6 @@
       "skillPath": "skills/engineering/improve-codebase-architecture/SKILL.md",
       "computedHash": "c77b86b4332919499608f9af1880074e1fec65a59b95c70c27a9f39cd137865e"
     },
-    "openspec-workflow": {
-      "source": "xqvvu/skills",
-      "sourceType": "github",
-      "skillPath": "skills/openspec-workflow/SKILL.md",
-      "computedHash": "010956b3f5a16668e2e1e98f61ae206de3892352da3b05fd24e89698717b2c24"
-    },
     "prototype": {
       "source": "mattpocock/skills",
       "sourceType": "github",

@@ -26,13 +26,6 @@ For Nuxt-related work, use the `nuxt-remote` MCP before relying on memory.
 - Use `list_deploy_providers` / `get_deploy_provider` when touching deployment or hosting assumptions.
 - After checking docs, align the implementation with this codebase's existing patterns instead of introducing a new architecture.
 
-## OpenSpec Workflow
-
-- For new requirements, feature work, behavior changes, bug fixes, and refactors, use the local `openspec-workflow` skill before implementation unless the user explicitly asks to skip OpenSpec.
-- Route the work through the OpenSpec-generated skills in `.codex/skills/`: `openspec-explore`, `openspec-propose`, `openspec-apply-change`, and `openspec-archive-change`.
-- Do not implement a non-trivial change until an OpenSpec proposal and tasks exist. Show tasks for user review when requested, then keep `tasks.md` updated while implementing.
-- OpenSpec does not replace the Nuxt and testing rules below: still use `nuxt-remote` for Nuxt research and Playwright MCP for user-visible verification.
-
 ## Testing Research
 
 - For Nuxt testing changes, check Nuxt docs with `nuxt-remote` first. Prefer the official `@nuxt/test-utils` guidance when adding unit, Nuxt-runtime, or end-to-end test structure.
