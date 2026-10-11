@@ -2,7 +2,7 @@
 const route = useRoute();
 const path = computed(() => `/blog/${(route.params.slug as string[]).join("/")}`);
 
-const { data: article } = await useAsyncData(`blog-${path.value}`, () =>
+const { data: article } = await useAsyncData(`article-${path.value}`, () =>
   queryArticleByPath(path.value),
 );
 
@@ -15,14 +15,10 @@ const { data: surround } = await useAsyncData(`surround-${path.value}`, () =>
 );
 
 const { data: relatedArticles } = await useAsyncData(`related-${path.value}`, () =>
-  queryRelatedArticles({
-    path: path.value,
-    tags: article.value?.tags,
-  }),
+  queryRelatedArticles({ path: path.value, tags: article.value?.tags }),
 );
 
 const tocLinks = computed(() => article.value?.body?.toc?.links ?? []);
-const hasToc = computed(() => tocLinks.value.length > 0);
 const site = useSiteConfig();
 const articleUrl = computed(() => new URL(path.value, site.url).toString());
 
@@ -42,12 +38,7 @@ useSeoMeta({
 });
 
 useHead({
-  link: [
-    {
-      rel: "canonical",
-      href: () => articleUrl.value,
-    },
-  ],
+  link: [{ rel: "canonical", href: () => articleUrl.value }],
 });
 
 useSchemaOrg([
@@ -61,71 +52,144 @@ useSchemaOrg([
 </script>
 
 <template>
-  <article v-if="article" class="site-container py-12 sm:py-16">
-    <div class="grid gap-12 lg:grid-cols-[minmax(0,720px)_minmax(0,260px)] lg:items-start">
-      <div class="min-w-0">
-        <NuxtLink
-          class="mb-8 inline-flex items-center gap-2 text-sm text-(--site-muted) transition-colors hover:text-(--site-accent)"
-          to="/blog"
-        >
-          <UIcon class="size-4" name="i-lucide-arrow-left" />
-          返回文章
-        </NuxtLink>
-
-        <header class="mb-10 border-b border-(--site-line) pb-8">
-          <ArticleMeta
-            class="mb-4"
-            :date="article.date"
-            :reading="article.reading"
-            :updated="article.updated"
-          />
-          <h1 class="text-4xl font-semibold tracking-normal text-(--site-fg) sm:text-5xl">
+  <article v-if="article" class="shell-wide pt-12 sm:pt-16">
+    <div
+      class="grid gap-10 lg:grid-cols-[minmax(0,var(--measure))_11rem] lg:justify-center lg:gap-14"
+    >
+      <div class="mx-auto w-full max-w-[44rem] min-w-0">
+        <header class="mb-10">
+          <h1 class="text-3xl font-semibold tracking-tight sm:text-[2.125rem] sm:leading-snug">
             {{ article.title }}
           </h1>
-          <p class="mt-5 text-lg/8 text-(--site-muted)">
-            {{ article.description }}
-          </p>
-          <ArticleTags class="mt-6" :tags="article.tags" />
+          <p class="mt-4 text-lg/8 text-(--ink-soft)">{{ article.description }}</p>
+
+          <div class="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-(--ink-faint)">
+            <time :datetime="article.date">{{ formatDate(article.date, "long") }}</time>
+            <template v-if="article.reading">
+              <span aria-hidden="true">·</span>
+              <span>{{ article.reading.text }}</span>
+            </template>
+            <template v-if="article.updated">
+              <span aria-hidden="true">·</span>
+              <span>更新于 {{ formatDate(article.updated, "long") }}</span>
+            </template>
+          </div>
+
+          <div v-if="article.tags?.length" class="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-sm">
+            <NuxtLink
+              v-for="tag in article.tags"
+              :key="tag"
+              class="muted-link hover:text-(--ink)"
+              :to="`/tags/${encodeURIComponent(tag)}`"
+            >
+              #{{ tag }}
+            </NuxtLink>
+          </div>
         </header>
 
-        <div v-if="hasToc" class="mb-8 lg:hidden">
-          <UContentToc
-            color="neutral"
-            highlight
-            highlight-color="neutral"
-            :links="tocLinks"
-            title="目录"
-          />
-        </div>
+        <!-- On narrow screens the outline sits above the body. -->
+        <details v-if="tocLinks.length" class="toc-inline">
+          <summary>目录</summary>
+          <ul>
+            <li v-for="link in tocLinks" :key="link.id">
+              <a :href="`#${link.id}`">{{ link.text }}</a>
+            </li>
+          </ul>
+        </details>
 
         <ArticleProse :value="article" />
 
-        <footer class="mt-14 border-t border-(--site-line) pt-8">
-          <div class="flex justify-end">
-            <NuxtLink
-              class="inline-flex items-center gap-2 text-sm font-medium text-(--site-muted) transition-colors hover:text-(--site-accent)"
-              to="/blog"
-            >
-              全部文章
-              <UIcon class="size-4" name="i-lucide-arrow-right" />
-            </NuxtLink>
-          </div>
-
-          <ArticleNav class="mt-8" :next="surround?.[1]" :previous="surround?.[0]" />
+        <footer class="mt-16 border-t border-(--rule) pt-8">
+          <ArticleNav :next="surround?.[1]" :previous="surround?.[0]" />
           <RelatedArticles class="mt-10" :articles="relatedArticles || []" />
+
+          <NuxtLink class="muted-link mt-10 inline-block text-sm hover:text-(--ink)" to="/blog">
+            ← 全部文章
+          </NuxtLink>
         </footer>
       </div>
 
-      <aside class="hidden min-w-0 overflow-hidden lg:sticky lg:top-24 lg:block">
-        <UContentToc
-          v-if="hasToc"
-          color="neutral"
-          highlight
-          highlight-color="neutral"
-          :links="tocLinks"
-          title="目录"
-        />
+      <!-- Outline: sticky, plain links, no highlight box. -->
+      <aside class="hidden lg:block">
+        <nav v-if="tocLinks.length" class="toc" aria-label="目录">
+          <p class="text-sm font-semibold text-(--ink-faint)">目录</p>
+          <ul class="mt-3">
+            <li v-for="link in tocLinks" :key="link.id">
+              <a class="toc__link" :href="`#${link.id}`">{{ link.text }}</a>
+            </li>
+          </ul>
+        </nav>
       </aside>
     </div>
   </article>
 </template>
+
+<style scoped>
+.toc {
+  position: sticky;
+  top: 5rem;
+  max-height: calc(100vh - 7rem);
+  overflow-y: auto;
+}
+
+.toc ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  border-left: 1px solid var(--rule);
+  padding-left: 0.9rem;
+  margin: 0;
+  list-style: none;
+}
+
+.toc__link {
+  color: var(--ink-faint);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  text-decoration: none;
+  transition: color 120ms ease;
+}
+
+.toc__link:hover {
+  color: var(--ink);
+}
+
+.toc-inline {
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+}
+
+.toc-inline summary {
+  color: var(--ink-soft);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.toc-inline ul {
+  margin: 0.75rem 0 0;
+  padding-left: 1.1rem;
+  list-style: disc;
+}
+
+.toc-inline li {
+  margin-block: 0.35rem;
+}
+
+.toc-inline a {
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.toc-inline a:hover {
+  color: var(--ink);
+}
+
+@media (min-width: 1024px) {
+  .toc-inline {
+    display: none;
+  }
+}
+</style>

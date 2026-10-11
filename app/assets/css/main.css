@@ -1,106 +1,159 @@
 @import "tailwindcss";
-@import "@nuxt/ui";
-@plugin "@iconify/tailwind4" {
-  prefix: i;
-}
+
+/*
+ * laifu.me design system
+ * ------------------------------------------------------------------
+ * Colour: near-monochrome. Two values carry the whole palette — ink for
+ * text, a single faint rule for structure. Nothing else competes with the
+ * writing. Light mode sits on pure white; dark mode on near-black.
+ * Type: Inter for text, Noto Sans SC for CJK, JetBrains Mono for code.
+ * Layout: one narrow measure (~44rem) for prose, wider only for listings.
+ */
 
 :root {
   color-scheme: light;
-  --site-bg: #f7f5f0;
-  --site-fg: #1f2933;
-  --site-muted: #697586;
-  --site-line: #ddd8cf;
-  --site-panel: #fffdf8;
-  --site-accent: #27272a;
-  --font-ui:
-    "Roboto", "Noto Sans SC", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
-  --font-code: "Fira Code", "SF Mono", "Cascadia Code", "Roboto Mono", ui-monospace, monospace;
+
+  --ink: #18181b;
+  --ink-soft: #52525b;
+  --ink-faint: #71717a;
+  --paper: #ffffff;
+  --paper-sunk: #fafafa;
+  --rule: #e4e4e7;
+  --rule-soft: #f0f0f1;
+
+  --link: #18181b;
+  --link-underline: #d4d4d8;
+  --mark: #c2410c;
+
+  --font-text:
+    "Inter", "Noto Sans SC", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-mono:
+    "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Reading measure for prose. */
+  --measure: 44rem;
+  /* Listing width: one column, roomy but still line-length aware. */
+  --shell: 52rem;
+  /* Article width: the measure plus its table-of-contents rail. */
+  --shell-wide: 60rem;
+
+  --dot-size: 22px;
+  --dot-color: color-mix(in srgb, var(--ink), transparent 93%);
 }
 
 .dark {
   color-scheme: dark;
-  --site-bg: #050505;
-  --site-fg: #f5f5f5;
-  --site-muted: #a3a3a3;
-  --site-line: #262626;
-  --site-panel: #0f0f0f;
-  --site-accent: #e4e4e7;
-  --ui-bg: var(--site-bg);
-  --ui-bg-muted: #111111;
-  --ui-bg-elevated: #1a1a1a;
-  --ui-bg-accented: #242424;
-  --ui-text: var(--site-fg);
-  --ui-text-muted: var(--site-muted);
-  --ui-text-dimmed: #737373;
-  --ui-border: var(--site-line);
-  --ui-border-muted: #1f1f1f;
-  --ui-border-accented: #3a3a3a;
+
+  --ink: #ededed;
+  --ink-soft: #a1a1aa;
+  --ink-faint: #71717a;
+  --paper: #0b0b0c;
+  --paper-sunk: #131315;
+  --rule: #27272a;
+  --rule-soft: #1c1c1f;
+
+  --link: #ededed;
+  --link-underline: #3f3f46;
+  --mark: #fb923c;
+
+  --dot-color: color-mix(in srgb, var(--ink), transparent 90%);
 }
 
 html {
-  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
   min-width: 320px;
-  background:
-    radial-gradient(
-      circle at 18% 0%,
-      color-mix(in srgb, var(--site-accent), transparent 88%) 0,
-      transparent 320px
-    ),
-    linear-gradient(180deg, color-mix(in srgb, var(--site-bg), white 8%) 0%, var(--site-bg) 460px),
-    var(--site-bg);
-  color: var(--site-fg);
-  font-family: var(--font-ui);
+  background-color: var(--paper);
+  background-image: radial-gradient(var(--dot-color) 1px, transparent 0);
+  background-position: -1px -1px;
+  background-size: var(--dot-size) var(--dot-size);
+  color: var(--ink);
+  font-family: var(--font-text);
+  font-synthesis-weight: none;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 :where(code, pre, kbd, samp) {
-  font-family: var(--font-code);
-  font-variant-ligatures: contextual;
+  font-family: var(--font-mono);
+  font-feature-settings: "liga" 0;
 }
 
-.dark body {
-  background: linear-gradient(180deg, #0d0d0d 0%, var(--site-bg) 420px), var(--site-bg);
+:where(h1, h2, h3, h4, h5, h6) {
+  color: var(--ink);
+  font-weight: 600;
+  letter-spacing: -0.011em;
+  text-wrap: balance;
+}
+
+:where(p) {
+  text-wrap: pretty;
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--site-accent), transparent 75%);
+  background: color-mix(in srgb, var(--mark), transparent 78%);
 }
 
-.page-soft-enter-active,
-.page-soft-leave-active {
-  transition:
-    opacity 160ms ease,
-    transform 180ms ease;
+:focus-visible {
+  border-radius: 3px;
+  outline: 2px solid var(--mark);
+  outline-offset: 2px;
 }
 
-.page-soft-enter-from {
+/* Page transition: a short, single fade. Nothing slides. */
+.page-fade-enter-active,
+.page-fade-leave-active {
+  transition: opacity 140ms ease;
+}
+
+.page-fade-enter-from,
+.page-fade-leave-to {
   opacity: 0;
-  transform: translateY(10px);
-}
-
-.page-soft-leave-to {
-  opacity: 0;
-  transform: translateY(-6px);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .page-soft-enter-active,
-  .page-soft-leave-active {
-    transition: none;
+  html {
+    scroll-behavior: auto;
   }
 
-  .page-soft-enter-from,
-  .page-soft-leave-to {
-    opacity: 1;
-    transform: none;
+  .page-fade-enter-active,
+  .page-fade-leave-active {
+    transition: none;
   }
 }
 
-@utility site-container {
-  width: min(100% - 32px, 1040px);
+@utility shell {
+  width: min(100% - 2.5rem, var(--shell));
   margin-inline: auto;
+}
+
+@utility shell-wide {
+  width: min(100% - 2.5rem, var(--shell-wide));
+  margin-inline: auto;
+}
+
+@utility measure {
+  width: min(100% - 2.5rem, var(--measure));
+  margin-inline: auto;
+}
+
+@utility muted-link {
+  color: var(--ink-soft);
+  text-decoration: none;
+  transition: color 120ms ease;
+}
+
+@utility prose-link {
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-color: var(--link-underline);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color 120ms ease;
 }

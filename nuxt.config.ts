@@ -1,9 +1,10 @@
+import tailwindcss from "@tailwindcss/vite";
+
 import { getPrerenderRoutes } from "./utils/content-routes";
 import { readingStats } from "./utils/reading-time";
 
 type NuxtConfig = NonNullable<Parameters<typeof defineNuxtConfig>[0]>;
 type NuxtConfigHooks = NonNullable<NuxtConfig["hooks"]>;
-type NuxtConfigVitePlugins = NonNullable<NonNullable<NuxtConfig["vite"]>["plugins"]>;
 
 const contentFileAfterParseHook: NuxtConfigHooks["content:file:afterParse"] = ({
   content,
@@ -20,28 +21,6 @@ const prerenderRoutesHook: NuxtConfigHooks["prerender:routes"] = async (ctx) => 
 };
 
 /**
- * NUXT_B7002 workaround:
- * @nuxtjs/mdc injects `optimizeDeps.include` as `@nuxtjs/mdc > <dep>`.
- * @nuxt/content rewrites those to `@nuxt/content > @nuxtjs/mdc > <dep>` so pnpm
- * can resolve them, but it registers the rewrite before mdc adds the entries.
- * Re-apply the rewrite after both modules have mutated the Vite config.
- */
-function fixMdcOptimizeDeps(): NuxtConfigVitePlugins[number] {
-  return {
-    name: "laifu:fix-mdc-optimize-deps",
-    config(config) {
-      const include = config.optimizeDeps?.include;
-      if (!include?.length) return;
-
-      config.optimizeDeps ??= {};
-      config.optimizeDeps.include = include
-        .filter((id) => id !== "@nuxtjs/mdc")
-        .map((id) => id.replace(/^@nuxtjs\/mdc > /, "@nuxt/content > @nuxtjs/mdc > "));
-    },
-  };
-}
-
-/**
  * NUXT_B2005 workaround:
  * Nuxt 4.5 ships `check-if-page-unused` with
  * `export { A, plugin as default, B }`. mlly's findExports only marks a
@@ -51,6 +30,28 @@ function fixMdcOptimizeDeps(): NuxtConfigVitePlugins[number] {
  */
 const stripBrokenCheckIfPageUnusedPlugin: NuxtConfigHooks["app:resolve"] = (app) => {
   app.plugins = app.plugins.filter((plugin) => !plugin.src.includes("check-if-page-unused"));
+};
+
+/**
+ * MDC directive → component aliases, supplied to `@nuxtjs/mdc` directly.
+ * Nuxt Content already ships default `Prose*` components for standard
+ * markdown nodes, so this only has to name the container directives used
+ * across `content/`. Each target lives in `app/components/content/` and is
+ * auto-imported by name.
+ */
+const contentComponents = {
+  note: "ProseNote",
+  tip: "ProseTip",
+  warning: "ProseWarning",
+  card: "ProseCard",
+  tabs: "ProseTabs",
+  "tabs-item": "ProseTabsItem",
+  "code-group": "ProseCodeGroup",
+  "code-collapse": "ProseCodeCollapse",
+  kbd: "ProseKbd",
+  pre: "ProsePre",
+  "video-player": "VideoPlayer",
+  "video-embed": "VideoEmbed",
 };
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
@@ -64,15 +65,7 @@ export default defineNuxtConfig({
     "prerender:routes": prerenderRoutesHook,
     "app:resolve": stripBrokenCheckIfPageUnusedPlugin,
   },
-  modules: [
-    "@nuxt/eslint",
-    "@nuxt/fonts",
-    "@nuxt/image",
-    "@nuxt/content",
-    "@nuxt/ui",
-    "@nuxtjs/seo",
-  ],
-  eslint: {},
+  modules: ["@nuxt/fonts", "@nuxt/content", "@nuxtjs/color-mode", "@nuxtjs/seo"],
   css: ["~/assets/css/main.css"],
   site: {
     name: "laifu.me",
@@ -83,7 +76,7 @@ export default defineNuxtConfig({
   fonts: {
     families: [
       {
-        name: "Roboto",
+        name: "Inter",
         provider: "fontsource",
         global: true,
         weights: [400, 500, 600, 700],
@@ -93,24 +86,25 @@ export default defineNuxtConfig({
         provider: "fontsource",
         global: true,
         subsets: ["chinese-simplified"],
-        weights: [400, 500, 600, 700],
+        weights: [400, 500, 700],
       },
       {
-        name: "Fira Code",
+        name: "JetBrains Mono",
         provider: "fontsource",
-        weights: [400, 500, 600],
+        weights: [400, 500],
       },
     ],
+  },
+  colorMode: {
+    classSuffix: "",
+    preference: "system",
+    fallback: "light",
   },
   ogImage: {
     enabled: false,
   },
   sitemap: {
     sources: ["/api/__sitemap__/urls"],
-  },
-  image: {
-    domains: ["images.pexels.com", "i.ytimg.com"],
-    quality: 80,
   },
   nitro: {
     prerender: {
@@ -120,7 +114,7 @@ export default defineNuxtConfig({
   },
   app: {
     pageTransition: {
-      name: "page-soft",
+      name: "page-fade",
       mode: "out-in",
     },
     head: {
@@ -147,7 +141,7 @@ export default defineNuxtConfig({
           theme: {
             default: "github-light",
             light: "github-light",
-            dark: "github-dark-high-contrast",
+            dark: "github-dark-default",
           },
         },
         toc: {
@@ -157,9 +151,11 @@ export default defineNuxtConfig({
       },
     },
   },
-  ui: {
-    theme: {
-      colors: ["emerald", "sky", "slate", "zinc", "neutral"],
+  // `@nuxtjs/mdc` reads its directive map from here and mirrors it into
+  // `runtimeConfig.public.mdc`, which is what the renderer actually consults.
+  mdc: {
+    components: {
+      map: contentComponents,
     },
   },
   typescript: {
@@ -168,6 +164,6 @@ export default defineNuxtConfig({
     },
   },
   vite: {
-    plugins: [fixMdcOptimizeDeps()],
+    plugins: [tailwindcss()],
   },
 });

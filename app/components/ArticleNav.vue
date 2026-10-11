@@ -12,45 +12,42 @@ defineProps<{
 </script>
 
 <template>
-  <nav
-    v-if="previous || next"
-    aria-label="相邻文章"
-    class="grid gap-4 border-t border-(--site-line) pt-8 sm:grid-cols-2"
-  >
-    <NuxtLink
-      v-if="previous"
-      class="group rounded-md border border-(--site-line) bg-(--site-panel)/45 p-4 transition-colors hover:border-(--site-accent)"
-      :class="{ 'sm:col-span-2': !next }"
-      :to="previous.path"
-    >
-      <span
-        class="mb-3 inline-flex items-center gap-2 text-sm text-(--site-muted) group-hover:text-(--site-accent)"
-      >
-        <UIcon class="size-4" name="i-lucide-arrow-left" />
-        上一篇
-      </span>
-      <p class="font-medium text-(--site-fg)">{{ previous.title }}</p>
-      <p v-if="previous.description" class="mt-2 line-clamp-2 text-sm/6 text-(--site-muted)">
-        {{ previous.description }}
-      </p>
+  <nav v-if="previous || next" class="grid gap-6 sm:grid-cols-2" aria-label="相邻文章">
+    <NuxtLink v-if="previous" class="nav-item" :to="previous.path">
+      <span class="nav-item__label">← 上一篇</span>
+      <span class="nav-item__title">{{ previous.title }}</span>
     </NuxtLink>
 
-    <NuxtLink
-      v-if="next"
-      class="group rounded-md border border-(--site-line) bg-(--site-panel)/45 p-4 text-right transition-colors hover:border-(--site-accent)"
-      :class="{ 'sm:col-span-2': !previous }"
-      :to="next.path"
-    >
-      <span
-        class="mb-3 inline-flex items-center justify-end gap-2 text-sm text-(--site-muted) group-hover:text-(--site-accent)"
-      >
-        下一篇
-        <UIcon class="size-4" name="i-lucide-arrow-right" />
-      </span>
-      <p class="font-medium text-(--site-fg)">{{ next.title }}</p>
-      <p v-if="next.description" class="mt-2 line-clamp-2 text-sm/6 text-(--site-muted)">
-        {{ next.description }}
-      </p>
+    <NuxtLink v-if="next" class="nav-item sm:text-right" :to="next.path">
+      <span class="nav-item__label">下一篇 →</span>
+      <span class="nav-item__title">{{ next.title }}</span>
     </NuxtLink>
   </nav>
 </template>
+
+<style scoped>
+.nav-item {
+  display: block;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.nav-item__label {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--ink-faint);
+  font-size: 0.8125rem;
+}
+
+.nav-item__title {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.nav-item:hover .nav-item__title {
+  text-decoration: underline;
+  text-decoration-color: var(--link-underline);
+  text-underline-offset: 0.2em;
+}
+</style>

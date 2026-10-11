@@ -25,3 +25,7 @@ test-results
 .env
 .env.*
 !.env.example
+.alma-snapshots
+
+# Local tool scratch / design studies (see .oxlintrc.json ignorePatterns)
+.stitch

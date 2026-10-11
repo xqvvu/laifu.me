@@ -1,3 +1,9 @@
+/**
+ * Pure, runtime-agnostic helpers shared by the app and the server.
+ * Nothing here touches Nuxt Content — it only shapes plain article objects,
+ * which keeps it trivially testable and importable from `nuxt.config.ts`.
+ */
+
 export type ArticleReading = {
   text: string;
   wordCountText: string;
@@ -14,11 +20,38 @@ export type ArticleListingItem = {
 
 export type ArticleTagCount = [tag: string, count: number];
 
-export type ArticleArchiveGroup<T extends { date: string }> = [month: string, articles: T[]];
+/**
+ * Field names available on the blog collection. Declared here as literals so
+ * the column sets below stay assignable to Content's `select()`.
+ */
+export type ArticleField =
+  | "path"
+  | "title"
+  | "description"
+  | "date"
+  | "updated"
+  | "tags"
+  | "reading";
 
-export function sortArticlesNewestFirst<T extends { date: string }>(articles: T[]) {
-  return [...articles].sort((a, b) => +new Date(b.date) - +new Date(a.date));
-}
+/**
+ * Column sets for Content queries. Picking fields in one place keeps every
+ * listing consistent and stops `select()` lists from drifting apart.
+ */
+export const articleFields: Record<
+  "index" | "listing" | "archive" | "feed" | "sitemap",
+  readonly ArticleField[]
+> = {
+  /** Minimal shape for search/tag indexing. */
+  index: ["path", "title", "description", "date", "tags"],
+  /** Listing rows: everything ArticleCard renders. */
+  listing: ["path", "title", "description", "date", "tags", "reading"],
+  /** Archive rows: date and title only. */
+  archive: ["path", "title", "date"],
+  /** Feed entries: adds description for the RSS summary. */
+  feed: ["path", "title", "description", "date", "tags"],
+  /** Sitemap entries: needs dates and tags, not prose. */
+  sitemap: ["path", "date", "updated", "tags"],
+};
 
 export function countArticleTags(articles: Pick<ArticleListingItem, "tags">[]): ArticleTagCount[] {
   const counts = new Map<string, number>();
@@ -29,7 +62,7 @@ export function countArticleTags(articles: Pick<ArticleListingItem, "tags">[]): 
     }
   }
 
-  return [...counts.entries()].sort((a, b) => b[1] - a[1]);
+  return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "zh-CN"));
 }
 
 export function listArticleTags(articles: Pick<ArticleListingItem, "tags">[]) {
@@ -42,19 +75,16 @@ export function searchArticleListings<T extends ArticleListingItem>(
   articles: T[],
   keyword: string,
 ) {
-  const normalizedKeyword = keyword.trim().toLowerCase();
+  const needle = keyword.trim().toLowerCase();
 
-  if (!normalizedKeyword) {
-    return [];
-  }
+  if (!needle) return [];
 
-  return articles.filter((article) => {
-    const haystack = [article.title, article.description, article.tags?.join(" ")]
+  return articles.filter((article) =>
+    [article.title, article.description, article.tags?.join(" ")]
       .join(" ")
-      .toLowerCase();
-
-    return haystack.includes(normalizedKeyword);
-  });
+      .toLowerCase()
+      .includes(needle),
+  );
 }
 
 export function filterArticlesByTag<T extends Pick<ArticleListingItem, "tags">>(
@@ -64,20 +94,25 @@ export function filterArticlesByTag<T extends Pick<ArticleListingItem, "tags">>(
   return articles.filter((article) => article.tags?.includes(tag));
 }
 
-export function groupArticlesByMonth<T extends { date: string }>(
-  articles: T[],
-): ArticleArchiveGroup<T>[] {
-  const grouped = new Map<string, T[]>();
+export function groupArticlesByYear<T extends { date: string }>(articles: T[]) {
+  return groupByKey(articles, (date) => `${date.getFullYear()}`);
+}
+
+/**
+ * Buckets articles by a date-derived key, newest first, preserving the
+ * incoming order inside each bucket.
+ */
+function groupByKey<T extends { date: string }>(articles: T[], keyOf: (date: Date) => string) {
+  const groups = new Map<string, T[]>();
 
   for (const article of articles) {
-    const date = new Date(article.date);
-    const key = `${date.getFullYear()} 年 ${date.getMonth() + 1} 月`;
-    const items = grouped.get(key) || [];
-
-    grouped.set(key, [...items, article]);
+    const key = keyOf(new Date(article.date));
+    const bucket = groups.get(key);
+    if (bucket) bucket.push(article);
+    else groups.set(key, [article]);
   }
 
-  return [...grouped.entries()];
+  return [...groups.entries()];
 }
 
 export function rankRelatedArticles<T extends ArticleListingItem>(
@@ -87,17 +122,18 @@ export function rankRelatedArticles<T extends ArticleListingItem>(
 ) {
   const currentTags = currentArticle.tags || [];
 
-  if (!currentTags.length) {
-    return [];
-  }
+  if (!currentTags.length) return [];
 
   return articles
     .filter((article) => article.path !== currentArticle.path)
     .map((article) => ({
-      ...article,
+      article,
       relevance: (article.tags || []).filter((tag) => currentTags.includes(tag)).length,
     }))
-    .filter((article) => article.relevance > 0)
-    .sort((a, b) => b.relevance - a.relevance || +new Date(b.date) - +new Date(a.date))
-    .slice(0, limit);
+    .filter((entry) => entry.relevance > 0)
+    .sort(
+      (a, b) => b.relevance - a.relevance || +new Date(b.article.date) - +new Date(a.article.date),
+    )
+    .slice(0, limit)
+    .map((entry) => entry.article);
 }

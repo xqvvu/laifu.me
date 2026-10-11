@@ -1,11 +1,11 @@
 import { queryCollection } from "@nuxt/content/server";
 import type { H3Event } from "h3";
-import { listArticleTags } from "~~/utils/article-listing-core";
+import { articleFields, listArticleTags } from "~~/utils/article-listing-core";
 
 export function queryFeedArticles(event: H3Event) {
   return queryCollection(event, "blog")
     .where("draft", "<>", true)
-    .select("path", "title", "description", "date", "tags")
+    .select(...articleFields.feed)
     .order("date", "DESC")
     .all();
 }
@@ -13,14 +13,12 @@ export function queryFeedArticles(event: H3Event) {
 export function querySitemapArticles(event: H3Event) {
   return queryCollection(event, "blog")
     .where("draft", "<>", true)
-    .select("path", "date", "updated", "tags")
+    .select(...articleFields.sitemap)
     .all();
 }
 
 export async function querySitemapTagUrls(event: H3Event) {
-  const articles = await querySitemapArticles(event);
-
-  return listArticleTags(articles).map((tag) => ({
+  return listArticleTags(await querySitemapArticles(event)).map((tag) => ({
     loc: `/tags/${tag}`,
   }));
 }

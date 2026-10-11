@@ -10,10 +10,9 @@ useSeoMeta({
 </script>
 
 <template>
-  <section class="site-container py-12 sm:py-16">
-    <div class="max-w-3xl">
-      <p class="text-sm tracking-[0.16em] text-(--site-accent) uppercase">About</p>
-      <ArticleProse v-if="page" class="mt-6" :value="page" />
+  <div class="shell pt-14 sm:pt-20">
+    <div class="max-w-[44rem]">
+      <ArticleProse v-if="page" :value="page" />
     </div>
-  </section>
+  </div>
 </template>

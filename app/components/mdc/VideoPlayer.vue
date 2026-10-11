@@ -62,7 +62,7 @@ const label = computed(() => props.title || props.caption || "Video");
   .frame {
     aspect-ratio: 16 / 9;
     overflow: hidden;
-    border: 1px solid var(--site-line);
+    border: 1px solid var(--rule);
     border-radius: 8px;
     background: #000000;
   }
@@ -78,7 +78,7 @@ const label = computed(() => props.title || props.caption || "Video");
 
   .caption {
     margin-top: 0.625rem;
-    color: var(--site-muted);
+    color: var(--ink-soft);
     font-size: 0.875rem;
     line-height: 1.6;
     text-align: center;

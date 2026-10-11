@@ -1,45 +1,102 @@
 <script setup lang="ts">
 const { data: articles } = await useAsyncData("archive-posts", () => queryArchiveArticles());
-
-const groups = computed(() => groupArticlesByMonth(articles.value || []));
+const groups = computed(() => groupArticlesByYear(articles.value || []));
 
 useSeoMeta({
   title: "归档",
-  description: "laifu.me 的文章时间归档。",
+  description: "laifu.me 的全部文章，按年份归档。",
 });
 </script>
 
 <template>
-  <section class="site-container py-12 sm:py-16">
-    <div class="mb-10">
-      <p class="text-sm tracking-[0.16em] text-(--site-accent) uppercase">Archive</p>
-      <h1 class="mt-3 text-4xl font-semibold tracking-normal">归档</h1>
-      <p class="mt-4 max-w-2xl text-(--site-muted)">按发布时间浏览所有文章。</p>
-    </div>
+  <div class="shell pt-14 sm:pt-20">
+    <header class="max-w-[36rem]">
+      <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">归档</h1>
+      <p class="mt-4 text-base/7 text-(--ink-soft)">按发布时间浏览所有文章。</p>
+    </header>
 
-    <div class="max-w-3xl">
+    <!--
+      The year is set very large and very faint behind its list, the way a
+      printed index runs a folio. It is decorative structure, so it stays out
+      of the accessibility tree and never intercepts a click.
+    -->
+    <div class="mt-14 max-w-[38rem]">
       <section
-        v-for="[month, items] in groups"
-        :key="month"
-        class="border-t border-(--site-line) py-8 first:border-t-0 first:pt-0"
+        v-for="[year, items] in groups"
+        :key="year"
+        class="archive-group relative border-t border-(--rule) py-10 first:border-t-0 first:pt-0"
       >
-        <h2 class="mb-5 text-sm font-semibold text-(--site-muted)">{{ month }}</h2>
-        <div class="space-y-5">
-          <NuxtLink
-            v-for="article in items"
-            :key="article.path"
-            class="-mx-3 grid gap-2 rounded-md px-3 py-2 transition-colors hover:bg-(--site-panel) sm:grid-cols-[120px_1fr] sm:items-baseline"
-            :to="article.path"
-          >
-            <time class="text-sm text-(--site-muted)" :datetime="article.date">
-              {{ formatDate(article.date) }}
-            </time>
-            <span class="text-lg font-medium tracking-normal hover:text-(--site-accent)">
-              {{ article.title }}
-            </span>
-          </NuxtLink>
-        </div>
+        <span class="archive-year" aria-hidden="true">{{ year }}</span>
+
+        <ul class="relative space-y-2.5">
+          <li v-for="article in items" :key="article.path">
+            <NuxtLink class="archive-item" :to="article.path">
+              <time class="archive-item__date" :datetime="article.date">
+                {{ formatDate(article.date) }}
+              </time>
+              <span class="archive-item__title">{{ article.title }}</span>
+            </NuxtLink>
+          </li>
+        </ul>
       </section>
     </div>
-  </section>
+  </div>
 </template>
+
+<style scoped>
+.archive-group {
+  isolation: isolate;
+}
+
+/*
+ * Absolutely positioned so it never widens the list; the type size is
+ * allowed to overflow the container rather than force a scrollbar.
+ */
+.archive-year {
+  position: absolute;
+  top: 1.5rem;
+  right: 0;
+  z-index: -1;
+  color: color-mix(in srgb, var(--ink), transparent 93%);
+  font-size: clamp(4.5rem, 9vw, 7rem);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 1;
+  user-select: none;
+  pointer-events: none;
+}
+
+.archive-item {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.1rem 1.25rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.archive-item__date {
+  color: var(--ink-faint);
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+  transition: color 120ms ease;
+}
+
+.archive-item__title {
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.archive-item:hover .archive-item__title {
+  text-decoration: underline;
+  text-decoration-color: var(--link-underline);
+  text-underline-offset: 0.2em;
+}
+
+/* Date and title sit on one baseline once there is room for both. */
+@media (min-width: 30rem) {
+  .archive-item {
+    grid-template-columns: 7rem 1fr;
+    align-items: baseline;
+  }
+}
+</style>

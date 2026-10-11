@@ -24,6 +24,7 @@ export default defineContentConfig({
           .optional(),
       }),
     }),
+
     pages: defineCollection({
       type: "page",
       source: "pages/**/*.md",

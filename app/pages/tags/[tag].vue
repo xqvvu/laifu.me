@@ -3,7 +3,6 @@ const route = useRoute();
 const tag = computed(() => decodeURIComponent(route.params.tag as string));
 
 const { data: articles } = await useAsyncData(`tag-${tag.value}`, () => queryTagArticles());
-
 const taggedArticles = computed(() => filterArticlesByTag(articles.value || [], tag.value));
 
 useSeoMeta({
@@ -13,21 +12,19 @@ useSeoMeta({
 </script>
 
 <template>
-  <section class="site-container py-12 sm:py-16">
-    <NuxtLink
-      class="mb-8 inline-flex items-center gap-2 text-sm text-(--site-muted) hover:text-(--site-accent)"
-      to="/blog"
-    >
-      <UIcon class="size-4" name="i-lucide-arrow-left" />
-      返回文章
-    </NuxtLink>
-
-    <header class="mb-10">
-      <p class="text-sm tracking-[0.16em] text-(--site-accent) uppercase">Tag</p>
-      <h1 class="mt-3 text-4xl font-semibold tracking-normal">{{ tag }}</h1>
-      <p class="mt-4 text-(--site-muted)">{{ taggedArticles.length }} 篇文章</p>
+  <div class="shell pt-14 sm:pt-20">
+    <header class="max-w-[36rem]">
+      <p class="text-sm text-(--ink-faint)">
+        <NuxtLink class="muted-link hover:text-(--ink)" to="/blog">文章</NuxtLink>
+        <span aria-hidden="true"> / </span>
+        <span>标签</span>
+      </p>
+      <h1 class="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">{{ tag }}</h1>
+      <p class="mt-4 text-base/7 text-(--ink-soft)">{{ taggedArticles.length }} 篇文章</p>
     </header>
 
-    <ArticleCard v-for="article in taggedArticles" :key="article.path" :article="article" />
-  </section>
+    <div class="mt-10 max-w-[44rem]">
+      <ArticleCard v-for="article in taggedArticles" :key="article.path" :article="article" />
+    </div>
+  </div>
 </template>

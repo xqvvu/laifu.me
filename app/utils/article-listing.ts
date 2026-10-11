@@ -1,40 +1,41 @@
-import { rankRelatedArticles } from "~~/utils/article-listing-core";
+import {
+  articleFields,
+  rankRelatedArticles,
+  type ArticleField,
+} from "~~/utils/article-listing-core";
 
 export {
   countArticleTags,
   filterArticlesByTag,
-  groupArticlesByMonth,
+  groupArticlesByYear,
+  listArticleTags,
   rankRelatedArticles,
   searchArticleListings,
 } from "~~/utils/article-listing-core";
+
+export type { ArticleListingItem, ArticleTagCount } from "~~/utils/article-listing-core";
+
+/**
+ * Every public listing query shares the same three traits: it excludes
+ * drafts, orders newest-first, and picks a named column set. `publicBlog()`
+ * encodes that once so the queries below stay declarative.
+ */
+function publicBlog(fields: readonly ArticleField[]) {
+  return queryCollection("blog")
+    .where("draft", "<>", true)
+    .select(...fields);
+}
 
 export function queryPublicArticleCount() {
   return queryCollection("blog").where("draft", "<>", true).count("*");
 }
 
-export function queryFeaturedArticles(limit = 3) {
-  return queryCollection("blog")
-    .where("draft", "<>", true)
-    .where("featured", "=", true)
-    .select("path", "title", "description", "date")
-    .order("date", "DESC")
-    .limit(limit)
-    .all();
-}
-
-export function queryRecentArticles(limit = 5) {
-  return queryCollection("blog")
-    .where("draft", "<>", true)
-    .select("path", "title", "description", "date", "tags", "reading")
-    .order("date", "DESC")
-    .limit(limit)
-    .all();
+export function queryRecentArticles(limit = 6) {
+  return publicBlog(articleFields.listing).order("date", "DESC").limit(limit).all();
 }
 
 export function queryPagedArticles(page: number, pageSize: number) {
-  return queryCollection("blog")
-    .where("draft", "<>", true)
-    .select("path", "title", "description", "date", "tags", "reading")
+  return publicBlog(articleFields.listing)
     .order("date", "DESC")
     .skip((page - 1) * pageSize)
     .limit(pageSize)
@@ -42,27 +43,15 @@ export function queryPagedArticles(page: number, pageSize: number) {
 }
 
 export function queryArticleIndex() {
-  return queryCollection("blog")
-    .where("draft", "<>", true)
-    .select("path", "title", "description", "date", "tags")
-    .order("date", "DESC")
-    .all();
+  return publicBlog(articleFields.index).order("date", "DESC").all();
 }
 
 export function queryArchiveArticles() {
-  return queryCollection("blog")
-    .where("draft", "<>", true)
-    .select("path", "title", "date")
-    .order("date", "DESC")
-    .all();
+  return publicBlog(articleFields.archive).order("date", "DESC").all();
 }
 
 export function queryTagArticles() {
-  return queryCollection("blog")
-    .where("draft", "<>", true)
-    .select("path", "title", "description", "date", "tags", "reading")
-    .order("date", "DESC")
-    .all();
+  return publicBlog(articleFields.listing).order("date", "DESC").all();
 }
 
 export function queryArticleByPath(path: string) {
@@ -79,6 +68,5 @@ export async function queryRelatedArticles(
   currentArticle: { path: string; tags?: string[] },
   limit = 3,
 ) {
-  const articles = await queryArticleIndex();
-  return rankRelatedArticles(articles, currentArticle, limit);
+  return rankRelatedArticles(await queryArticleIndex(), currentArticle, limit);
 }
