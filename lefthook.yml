@@ -6,9 +6,9 @@ pre-commit:
       glob: "*.{js,jsx,ts,tsx,vue,json,jsonc,css,yml,yaml}"
       run: pnpm oxfmt {staged_files}
 
-    - name: eslint
+    - name: oxlint
       glob: "*.{js,jsx,ts,tsx,vue}"
-      run: pnpm eslint {staged_files}
+      run: pnpm oxlint {staged_files}
 
     - name: mdclint
       glob:

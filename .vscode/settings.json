@@ -7,11 +7,13 @@
   },
 
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
+    "source.format.oxc": "explicit",
+    "source.fixAll.oxc": "explicit"
   },
 
   "oxc.enable.oxfmt": true,
-  "oxc.fmt.configPath": "./.oxfmtrc.json",
+  // "oxc.fmt.configPath": "./.oxfmtrc.json",
+  // "oxc.path.oxlint": "./.oxlintrc.json",
 
   "[json][jsonc][vue][typescript][javascript][css]": {
     "editor.formatOnSave": true,
