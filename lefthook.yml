@@ -19,4 +19,10 @@ pre-commit:
 pre-push:
   jobs:
     - name: build
+      # A push containing only deletions would otherwise skip the build:
+      # lefthook derives the push file list from `git diff --name-only HEAD
+      # @{push}`, and a deletion-only range yields no paths, so the job is
+      # treated as having nothing to inspect. `skip: false` disables that
+      # emptiness check so the build always runs before pushing.
+      skip: false
       run: pnpm build
